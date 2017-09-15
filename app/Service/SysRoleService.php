@@ -49,7 +49,7 @@ class SysRoleService extends BaseService {
     public static function instance() {
         if ( self::$instance == NULL ) {
             self::$instance        = new SysRoleService();
-            self::$model = new SysRole();
+            self::$instance->model = new SysRole();
         }
 
         return self::$instance;

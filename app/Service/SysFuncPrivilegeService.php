@@ -41,7 +41,7 @@ class SysFuncPrivilegeService extends BaseService{
     public static function instance(){
         if ( self::$instance == NULL ) {
             self::$instance  = new SysFuncPrivilegeService();
-            self::$model = new SysFuncPrivilege();
+            self::$instance->model = new SysFuncPrivilege();
         }
 
         return self::$instance;

@@ -36,7 +36,7 @@ class SysFuncService extends BaseService{
     public static function instance(){
         if ( self::$instance == NULL ) {
             self::$instance  = new SysFuncService();
-            self::$model = new SysFunc();
+            self::$instance->model = new SysFunc();
         }
 
         return self::$instance;
