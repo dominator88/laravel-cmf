@@ -74,3 +74,27 @@ if ( ! function_exists( "ajax_arr" ) ) {
         return $arr;
     }
 }
+
+if ( ! function_exists( 'form_options' ) ) {
+    /**
+     * 生成下拉选项
+     *
+     * @param $data
+     * @param int $selected_value
+     *
+     * @return mixed|string
+     */
+    function form_options( $data , $selected_value = - 1 ) {
+        $html = '';
+        foreach ( $data as $key => $val ) {
+            $html .= "<option value='$key'>$val</option>";
+        }
+
+        if ( $selected_value >= 0 ) {
+            $html = str_replace( "value='$selected_value'" , "value='$selected_value' selected" , $html );
+        }
+
+        return $html;
+    }
+
+}

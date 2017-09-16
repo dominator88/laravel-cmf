@@ -1,6 +1,5 @@
 <?php
-
-namespace App\Trai\Service;
+namespace App\Traits\Service;
 
 trait GridTable {
   /**
@@ -65,7 +64,7 @@ trait GridTable {
    */
   public function destroy( $ids ) {
     try {
-      $rows = $this->model->delete( $ids );
+      $rows = $this->model->destroy( $ids );
       if ( $rows == 0 ) {
         return ajax_arr( "未删除任何数据" , 0 );
       }

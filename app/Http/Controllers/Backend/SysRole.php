@@ -23,7 +23,7 @@ class SysRole extends Backend{
         parent::__construct($request);
         $this->_initClassName( $this->controller );
 
-        $this->service = SysFuncService::instance();
+        $this->service = SysRoleService::instance();
     }
 
     //页面入口
@@ -33,6 +33,7 @@ class SysRole extends Backend{
         //uri
         $this->_addParam( 'uri', [
             'getPermission'    => full_uri( 'backend/sysrole/get_permission' ),
+            'getPrivilegeData' => full_uri('backend/sysrole/get_privilegeData'),
             'updatePermission' => full_uri( 'backend/sysrole/update_permission' )
         ] );
 
@@ -76,18 +77,16 @@ class SysRole extends Backend{
         $param['count'] = TRUE;
         $data['total']  = $this->service->getByCond( $param );
 
-        return json( ajax_arr( '查询成功', 0, $data ) );
+        return response()->json( ajax_arr( '查询成功', 0, $data ) );
     }
 
 
     function get_permission(Request $request) {
         $roleId = $request->input( 'roleId' );
-
         $SysFuncPrivilege      = SysFuncPrivilegeService::instance();
         $data['privilegeName'] = $SysFuncPrivilege->name;
         //取角色操作权限
-        $SysRolePermission    = SysRolePermissionService::instance();
-        $ret['privilegeData'] = $SysRolePermission->getByRole( $roleId );
+
 
         //取所有功能与操作
         $SysFunc          = SysFuncService::instance();
@@ -97,13 +96,19 @@ class SysRole extends Backend{
             'withPrivilege' => TRUE,
         ] );
 
+//var_dump(view( 'sysrole/index' ));
+     //   var_dump($data);
+//return view( 'sysrole/permission' )->with($data);
 
-        $View = new View();
+       return view( 'sysrole/permission' )->with($data);
 
-        $View->assign( $data );
-        $ret['html'] = $View->fetch( 'permission' );
+      //  return $ret;
+    }
 
-        return $ret;
+    function get_privilegeData(Request $request){
+        $roleId = $request->input( 'roleId' );
+        $SysRolePermission    = SysRolePermissionService::instance();
+        return response()->json($SysRolePermission->getByRole( $roleId ));
     }
 
     //更新授权

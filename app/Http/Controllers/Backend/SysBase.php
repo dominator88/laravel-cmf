@@ -48,7 +48,7 @@ class SysBase extends  Controller{
     }
 
     private function parseRouteAction($routeAction){
-        $routeAction = 'App\Http\Controllers\Backend\SysFunc@index';
+       // $routeAction = 'App\Http\Controllers\Backend\SysFunc@index';
         preg_match('/^App\\\Http\\\Controllers\\\(?P<module>\w+)\\\(?P<controller>\w+)@(?P<action>\w+)/', $routeAction, $matches);
 
         return $matches;
@@ -89,6 +89,7 @@ class SysBase extends  Controller{
      */
     public function _getPageJsPath() {
         //$js_file_name = substr( preg_replace( '/[A-Z]/', '_\0', $this->className ), 1 );
+
         return "static/js/{$this->module}/{$this->className}.js";
     }
 

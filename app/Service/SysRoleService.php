@@ -6,7 +6,7 @@
  * @version 2.0 2017-09-15
  */
 
-namespace apps\common\service;
+namespace App\Service;
 
 use App\Models\SysRole;
 
@@ -88,32 +88,33 @@ class SysRoleService extends BaseService {
         $param = extend( $default, $param );
 
         if ( ! empty( $param['keyword'] ) ) {
-            $this->model->where( 'name', 'like', "%{$param['keyword']}%" );
+            $this->model = $this->model->where( 'name', 'like', "%{$param['keyword']}%" );
         }
 
         $this->model->where( 'rank', 'lt', 10 );
         if ( $param['module'] !== '' ) {
-            $this->model->where( 'module', $param['module'] );
+            $this->model =  $this->model->where( 'module', $param['module'] );
         }
 
         if ( $param['status'] !== '' ) {
-            $this->model->where( 'status', $param['status'] );
+            $this->model = $this->model->where( 'status', $param['status'] );
         }
 
 
         if ( $param['count'] ) {
             return $this->model->count();
         } else {
-            $this->model->field( $param['field'] );
+       //     $this->model = $this->model->select( $param['field'] );
 
             if ( $param['getAll'] === FALSE ) {
-                $this->model->limit( ( $param['page'] - 1 ) * $param['pageSize'], $param['pageSize'] );
+              $this->model =  $this->model->skip( ( $param['page'] - 1 ) * $param['pageSize'])->take( $param['pageSize'] );
             }
 
-            $order[] = "{$param['sort']} {$param['order']}";
-            $this->model->order( $order );
+           
+            $this->model = $this->model->orderBy(  $param['order'] ,$param['sort'] );
+            $data =  $this->model->get()->toArray();
 
-            return $this->model->get()->toArray();
+            return $data;
             //echo $this->model->getLastSql();
         }
     }
