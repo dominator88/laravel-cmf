@@ -19,7 +19,7 @@ class Backend extends SysBase{
     public function __construct(Request $request)
     {
         parent::__construct($request);
-        $this->user = session(config('backend.sessionName') , 'aaa');
+        $this->user = session(config('backend.sessionName') );
         $this->middleware('guest');
     }
 

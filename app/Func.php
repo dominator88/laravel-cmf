@@ -98,3 +98,43 @@ if ( ! function_exists( 'form_options' ) ) {
     }
 
 }
+
+if ( ! function_exists( 'form_checkbox_rows' ) ) {
+    /**
+     * checkbox
+     *
+     * @param $name
+     * @param $data
+     * @param string $key
+     * @param string $val
+     * @param int $checked_value
+     *
+     * @return mixed|string
+     */
+    function form_checkbox_rows( $name , $data , $key = 'id' , $val = 'name' , $checked_value = 0 ) {
+        $html = '';
+        foreach ( $data as $item ) {
+            $html .= '<label class="checkbox-inline"><input name="' . $name . '[]" type="checkbox" value="' . $item[ $key ] . '" >' .
+                $item[ $val ] . '</label>';
+        }
+
+        if ( $checked_value >= 0 ) {
+            $html = str_replace( 'value="' . $checked_value . '"' , "value='$checked_value' checked" , $html );
+        }
+
+        return $html;
+    }
+}
+
+if ( ! function_exists( 'str2pwd' ) ) {
+    /**
+     * 字符串加密
+     *
+     * @param $str
+     *
+     * @return bool|string
+     */
+    function str2pwd( $str ) {
+        return password_hash( $str , PASSWORD_BCRYPT , [ "cost" => 10 ] );
+    }
+}

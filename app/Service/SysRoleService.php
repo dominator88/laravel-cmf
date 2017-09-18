@@ -9,6 +9,7 @@
 namespace App\Service;
 
 use App\Models\SysRole;
+use Illuminate\Support\Facades\DB;
 
 class SysRoleService extends BaseService {
 
@@ -87,35 +88,33 @@ class SysRoleService extends BaseService {
 
         $param = extend( $default, $param );
 
-        if ( ! empty( $param['keyword'] ) ) {
+        /*if ( ! empty( $param['keyword'] ) ) {
             $this->model = $this->model->where( 'name', 'like', "%{$param['keyword']}%" );
-        }
+        }*/
 
-        $this->model->where( 'rank', 'lt', 10 );
-        if ( $param['module'] !== '' ) {
-            $this->model =  $this->model->where( 'module', $param['module'] );
-        }
-
-        if ( $param['status'] !== '' ) {
-            $this->model = $this->model->where( 'status', $param['status'] );
-        }
+         $this->model->when( ! empty( $param['keyword'] ) , function($query) use ($param){
+            return $query->where('name', 'like', "%{$param['keyword']}%");
+        } )
+            ->when($param['module'] !== '' , function($query) use ($param){
+            return $query->where('module', $param['module'] );
+        } )
+            ->when( $param['status'] !== ''  , function($query) use ($param){
+                return $query->where('status', $param['status']);
+            })
+            ->where('rank', '<', 10 );
 
 
         if ( $param['count'] ) {
             return $this->model->count();
         } else {
        //     $this->model = $this->model->select( $param['field'] );
-
-            if ( $param['getAll'] === FALSE ) {
-              $this->model =  $this->model->skip( ( $param['page'] - 1 ) * $param['pageSize'])->take( $param['pageSize'] );
-            }
-
-           
-            $this->model = $this->model->orderBy(  $param['order'] ,$param['sort'] );
-            $data =  $this->model->get()->toArray();
+            $data =   $this->model->when($param['getAll'] === FALSE , function ($query) use ($param){
+                return $query->skip( ( $param['page'] - 1 ) * $param['pageSize'])->take( $param['pageSize'] );
+            })
+            ->orderBy(  $param['order'] ,$param['sort'] )->get()->toArray();
 
             return $data;
-            //echo $this->model->getLastSql();
+
         }
     }
 
@@ -131,7 +130,7 @@ class SysRoleService extends BaseService {
         $data = $this->model
             ->where( 'id', 'neq', config( 'superAdminId' ) )
             ->where( 'module', $module )
-            ->order( 'rank desc' )
+            ->orderBy( 'rank' , 'desc')
             ->get()->toArray();
 
         //echo $this->model->getLastSql();

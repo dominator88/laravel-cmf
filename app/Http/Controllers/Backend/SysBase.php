@@ -192,8 +192,23 @@ class SysBase extends  Controller{
 
     }
 
-    public function read_album_catalog(){
+    /**
+     * 取相册分类
+     *
+     * @return Json
+     */
+    public function read_album_catalog() {
+        $MerAlbumCatalog = MerAlbumCatalogService::instance();
+        $result          = $MerAlbumCatalog->getByCond( [
+            'field'  => [ 'id' , 'tag' ] ,
+            'merId'  => $this->merId ,
+            'sort'   => 'sort' ,
+            'order'  => 'ASC' ,
+            'status' => 1 ,
+            'getAll' => TRUE
+        ] );
 
+        return response()->json( $result );
     }
 
     public function read_area(){
