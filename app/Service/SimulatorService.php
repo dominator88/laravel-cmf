@@ -32,7 +32,7 @@ class SimulatorService extends BaseService {
 
     function readApi( $apiVersion ) {
 
-        $dir   = APP_PATH . "/api/service/" . $apiVersion;
+        $dir   = app_path() . "/Http/Controllers/api/service/" . $apiVersion;
         $files = scandir( $dir );
 
         $api   = [];
@@ -46,18 +46,19 @@ class SimulatorService extends BaseService {
                 $api[ $file ] = [];
             }
 
-            $basePaths = $dir . DS . $file;
+            $basePaths = $dir . DIRECTORY_SEPARATOR . $file;
             if ( is_dir( $basePaths ) ) {
                 $basePathFiles = scandir( $basePaths );
                 foreach ( $basePathFiles as $f ) {
                     if ( strpos( $f, '.' ) == 0 ) {
                         continue;
                     }
-                    $f_path = $basePaths . DS . $f;
+                    $f_path = $basePaths . DIRECTORY_SEPARATOR . $f;
                     if ( is_file( $f_path ) ) {
                         if ( strpos( $f, '.php' ) > 0 ) {
                             $fileName = substr( $f, 0, strlen( $f ) - strlen( 'Service.php' ) );
 //							$f_name    = "Api\\Service\\{$apiVersion}\\$file\\" . $fileName;
+
                             $name = $this->_parser( $apiVersion, $file, $fileName );
                             if ( ! $name ) {
                                 continue;
@@ -77,7 +78,7 @@ class SimulatorService extends BaseService {
     }
 
     function _parser( $apiVersion, $subDir, $className ) {
-        $api = "apps\\api\\service\\{$apiVersion}\\{$subDir}\\{$className}Service";
+        $api = "App\\Http\\Controllers\\Api\\Service\\{$apiVersion}\\{$subDir}\\{$className}Service";
         //echo $api;
         $ref = new ReflectionClass( $api );
         $doc = $ref->getDocComment();

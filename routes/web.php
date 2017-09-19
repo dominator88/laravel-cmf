@@ -15,6 +15,7 @@ Route::get('', function () {
     return 'Hello word!';
 });
 
+
 Route::get('backend/index/index' ,  'Backend\Index@index');
 
 
@@ -103,5 +104,9 @@ Route::group(['prefix'=>'backend/sysarea','namespace'=>'Backend'],function(){
 Route::group(['prefix'=>'backend/simulator','namespace'=>'Backend'],function(){
 
     Route::get('index' , 'Simulator@index');
+
+    Route::get('read_api' , 'Simulator@read_api');
+
+    Route::get('read_params' , 'Simulator@read_params');
 
 });

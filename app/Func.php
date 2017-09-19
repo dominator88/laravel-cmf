@@ -138,3 +138,32 @@ if ( ! function_exists( 'str2pwd' ) ) {
         return password_hash( $str , PASSWORD_BCRYPT , [ "cost" => 10 ] );
     }
 }
+
+if ( ! function_exists( 'json' ) ) {
+
+    function json(Array $array){
+        return response()->json($array);
+    }
+
+}
+if( ! function_exists( 'api_result' ) ){
+
+    function api_result( $msg, $code_or_data = 500, $data = [] ) {
+        $result = [
+            'msg' => $msg
+        ];
+
+        if ( is_array( $code_or_data ) ) {
+            $result['code'] = 0;
+            $data           = array_merge( $code_or_data, $data );
+        } else {
+            $result['code'] = $code_or_data;
+        }
+
+        if ( ! empty( $data ) ) {
+            $result['data'] = $data;
+        }
+
+        return $result;
+    }
+}

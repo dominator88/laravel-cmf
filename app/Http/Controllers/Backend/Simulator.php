@@ -49,7 +49,7 @@ class Simulator extends Backend {
         $this->_addParam( [
             'deviceOsVersion' => $this->deviceOsVersion ,
             'apiVersion'      => $this->apiVersion ,
-            'secret'          => config( 'custom.Api' )['secret'] ,
+            'secret'          => config( 'api.secret' ) ,
             'testToken'       => $MerUser->getForTest() ,
             'testMer'         => $SysMerchant->getForTest() ,
             'defaultValue'    => [
@@ -61,7 +61,7 @@ class Simulator extends Backend {
         //需要引入的 css 和 js
         $this->_addJsLib( 'static/plugins/jquery-md5/jQuery.md5.js' );
 
-        return $this->_displayWithLayout();
+        return $this->_displayWithLayout('simulator.index');
     }
 
     //读取结果
@@ -79,7 +79,7 @@ class Simulator extends Backend {
         $action    = ucfirst( $action );
         $method    = $request->input( 'method' , '' );
 
-        $service = "apps\\api\\service\\{$this->apiVersion}\\{$directory}\\{$action}Service";
+        $service = "App\\Http\\Controllers\\Api\\Service\\{$this->apiVersion}\\{$directory}\\{$action}Service";
 
         $instance = $service::instance();
 
@@ -93,7 +93,7 @@ class Simulator extends Backend {
         $data['defaultParams']      = $instance->defaultParams[ $method ];
         $data['defaultResponse']    = $this->_fixDefaultResponse( $instance->defaultResponse[ $method ] );
 
-        return view('public.params')->with($data);
+        return view('simulator.params')->with($data);
 
     }
 
