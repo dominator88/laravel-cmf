@@ -30,7 +30,7 @@ class SysAreaService extends BaseService {
     public static function instance() {
         if ( self::$instance == NULL ) {
             self::$instance        = new SysAreaService();
-            self::$instance->model = new SysArea();
+            self::$instance->setModel(new SysArea()) ;
         }
 
         return self::$instance;
@@ -70,15 +70,15 @@ class SysAreaService extends BaseService {
         ];
 
         $param = extend( $default, $param );
-        $this->model = $this->model->keyword( $param['keyword'])->status($param['status'])->pid($param['pid'])->getAll($param);
+        $model = $this->getModel()->keyword( $param['keyword'])->status($param['status'])->pid($param['pid'])->getAll($param);
 
 
         if ( $param['count'] ) {
-            return $this->model->count();
+            return $model->count();
         }
 
 
-        $data =  $this->model->orderBy( $param['sort'] ,  $param['order'])->get()->toArray();
+        $data =  $model->orderBy( $param['sort'] ,  $param['order'])->get()->toArray();
 
 
         return $data ? $data : [];

@@ -31,7 +31,7 @@ class SysRolePermissionService extends BaseService {
     public static function instance() {
         if ( self::$instance == NULL ) {
             self::$instance        = new SysRolePermissionService();
-            self::$instance->model = new SysRolePermission();
+            self::$instance->setModel(new SysRolePermission());
         }
 
         return self::$instance;
@@ -53,29 +53,22 @@ class SysRolePermissionService extends BaseService {
 
         $param = extend( $default, $param );
 
-        if ( ! empty( $param['keyword'] ) ) {
-           $this->model =  $this->model->where( 'name', 'like', "%{$param['keyword']}%" );
-        }
+        $model = $this->getModel()->keyword($param['keyword'])->status($param['status']);
 
-        if ( $param['status'] !== '' ) {
-          $this->model =   $this->model->where( 'status', $param['status'] );
-        }
 
         if ( $param['count'] ) {
-            return $this->model->count();
+            return $model->count();
         }
 
-     //   $this->model->field( $param['field'] );
+     //   $this->getModel()->field( $param['field'] );
         if ( ! $param['getAll'] ) {
-          $this->model =  $this->model->skip( ( $param['page'] - 1 ) * $param['pageSize'])->take( $param['pageSize'] );
+          $model =  $model->getAll($param);
         }
 
 
-        $this->model = $this->model->orderBy($param['sort'] , $param['order']);
+        $data  = $model->orderBy($param['sort'] , $param['order'])->get()->toArray();
 
-        $data = $this->model->get()->toArray();
 
-        //echo $this->model->_sql();
 
         return $data ? $data : [];
     }
@@ -88,7 +81,7 @@ class SysRolePermissionService extends BaseService {
      * @return array
      */
     public function getPrivilegeByRole( $roleId ) {
-        $data = $this->model->where( 'role_id', $roleId )->select();
+        $data = $this->getModel()->where( 'role_id', $roleId )->select();
 
         if ( empty( $data ) ) {
             return $data;
@@ -110,7 +103,7 @@ class SysRolePermissionService extends BaseService {
      * @return mixed
      */
     function getByRole( $roleId ) {
-        return $this->model->where( 'role_id', $roleId )->get()->toArray();
+        return $this->getModel()->where( 'role_id', $roleId )->get()->toArray();
     }
 
     /**
@@ -134,7 +127,7 @@ class SysRolePermissionService extends BaseService {
 
         $funcUri = "$module/$func/index";
 
-        $data = $this->model
+        $data = $this->getModel()
             ->field( 'DISTINCT fp.name' )
             ->alias( 'rp' )
             ->where( 'rp.role_id', 'in', $roleId )
@@ -143,7 +136,7 @@ class SysRolePermissionService extends BaseService {
             ->join( 'sys_func f', 'f.id = fp.func_id' )
             ->select();
 
-//		echo $this->model->getLastSql();
+
         if ( empty( $data ) ) {
             return FALSE;
         }
@@ -170,8 +163,8 @@ class SysRolePermissionService extends BaseService {
     function destroyByFunc( $funcId ) {
         try {
             $sql = db( 'sys_func_privilege' )->where( 'func_id', $funcId )->buildSql();
-            $this->model->where( 'privilege_id', 'in', $sql );
-            $this->model->delete();
+            $this->getModel()->where( 'privilege_id', 'in', $sql );
+            $this->getModel()->delete();
 
             return ajax_arr( '删除成功', 0 );
         } catch ( \Exception $e ) {
@@ -197,7 +190,7 @@ class SysRolePermissionService extends BaseService {
             $needDelete = array_diff( $oldPrivilegeData, $privilegeArr );
 
             if ( ! empty( $needDelete ) ) {
-                $this->model
+                $this->getModel()
                     ->where( 'role_id', $roleId )
                     ->whereIn( 'privilege_id',  $needDelete )
                     ->delete();;
@@ -210,7 +203,7 @@ class SysRolePermissionService extends BaseService {
                         'privilege_id' => $privilegeId
                     ];
                 }
-                $this->model->insert( $addData );
+                $this->getModel()->insert( $addData );
             }
 
             DB::commit();

@@ -41,7 +41,7 @@ class SysFuncPrivilegeService extends BaseService{
     public static function instance(){
         if ( self::$instance == NULL ) {
             self::$instance  = new SysFuncPrivilegeService();
-            self::$instance->model = new SysFuncPrivilege();
+            self::$instance->setModel(new SysFuncPrivilege()) ;
         }
 
         return self::$instance;
@@ -60,7 +60,7 @@ class SysFuncPrivilegeService extends BaseService{
         ];
         $param = extend( $default , $param);
 
-        $data = $this->model
+        $data = $this->getModel()
             ->where(function ($query) use ($param) {
                 if( $param['status'] !== '') {
                     $query->where('status',$param['status']);
@@ -163,13 +163,13 @@ class SysFuncPrivilegeService extends BaseService{
      * @return array
      */
     public function getByFunc( $funcId ) {
-        $data = $this->model->where( 'func_id' , $funcId )->get()->toArray();
+        $data = $this->getModel()->where( 'func_id' , $funcId )->get()->toArray();
 
         return $data ? $data : [];
     }
 
     public function getByFuncs( $funcIds){
-        $data = $this->model->whereIn('func_id' , $funcIds)->get()->toArray();
+        $data = $this->getModel()->whereIn('func_id' , $funcIds)->get()->toArray();
         $newData = [];
         foreach ( $data as $item ) {
             $newData[ $item['func_id'] ][] = $item;

@@ -32,7 +32,7 @@ trait TreeTable {
 	 * @return mixed
 	 */
 	public function getById( $id ) {
-		return $this->model->find( $id );
+		return $this->getModel()->find( $id );
 	}
 	
 	/**
@@ -43,7 +43,7 @@ trait TreeTable {
 	 * @return mixed
 	 */
 	public function getByPid( $pid ) {
-		return $this->model->where( 'pid', $pid )->get()->toArray();
+		return $this->getModel()->where( 'pid', $pid )->get()->toArray();
 	}
 	
 	//转换树key
@@ -74,7 +74,7 @@ trait TreeTable {
 			}
 			
 			$data['level'] = $this->getLevel( $data['pid'] );
-			$id            = $this->model->insertGetId( $data );
+			$id            = $this->getModel()->insertGetId( $data );
 
 			return ajax_arr( '创建成功', 0, [ 'id' => $id ] );
 		} catch ( \Exception $e ) {
@@ -97,7 +97,7 @@ trait TreeTable {
 			}
 
 			$data['level'] = $this->getLevel( $data['pid'] );
-			$rows          = $this->model->where( 'id', $id )->update( $data );
+			$rows          = $this->getModel()->where( 'id', $id )->update( $data );
 			if ( $rows == 0 ) {
 				return ajax_arr( "未更新任何数据", 0 );
 			}
@@ -124,7 +124,7 @@ trait TreeTable {
 			}
 			
 			//删除数据
-			$rows = $this->model->destroy( $ids );
+			$rows = $this->getModel()->destroy( $ids );
 			if ( $rows == 0 ) {
 				return ajax_arr( '未删除任何数据', 0 );
 			}
@@ -148,15 +148,15 @@ trait TreeTable {
 		
 		$param = extend( $default, $param );
 		
-		$this->model->field( $param['field'] );
+		$this->getModel()->field( $param['field'] );
 		if ( $param['status'] !== '' ) {
-			$this->model->where( 'status', $param['status'] );
+			$this->getModel()->where( 'status', $param['status'] );
 		}
-		$this->model->order( 'level ASC , sort ASC ' );
-		$data = $this->model->select();
+		$this->getModel()->order( 'level ASC , sort ASC ' );
+		$data = $this->getModel()->select();
 		
 		
-		//echo $this->model->getLastSql();
+		//echo $this->getModel()->getLastSql();
 		$result = [];
 		$index  = [];
 		

@@ -28,12 +28,14 @@ class SysUserRoleService extends BaseService {
     public static function instance() {
         if ( self::$instance == NULL ) {
             self::$instance        = new SysUserRoleService();
-            self::$instance->model = new SysUserRole();
+            self::$instance->setModel(new SysUserRole())  ;
 
         }
 
         return self::$instance;
     }
+
+
 
     /**
      * 取默认值
@@ -70,25 +72,15 @@ class SysUserRoleService extends BaseService {
 
         $param = extend( $default , $param );
 
-        if ( ! empty( $param['keyword'] ) ) {
-            $this->model = $this->model->where( 'name' , 'like' , "%{$param['keyword']}%" );
-        }
+        $model = $this->name($param['keyword'])->status($param['status']);
 
-        if ( $param['status'] !== '' ) {
-            $this->model = $this->model->where( 'status' , $param['status'] );
-        }
 
         if ( $param['count'] ) {
-            return $this->model->count();
+            return $this->getModel()->count();
         } else {
-            //$this->model->field( $param['field'] );
+            //$this->getModel()->field( $param['field'] );
 
-            if ( ! $param['getAll'] ) {
-                $this->model = $this->model->skip( ( $param['page'] - 1 ) * $param['pageSize'])->take( $param['pageSize'] );
-            }
-
-
-            $data =  $this->model->orderBy( $param['sort'] , $param['order'])->get()->toArray();
+            $data = $model->getAll($param)->orderBy( $param['sort'] , $param['order'])->get()->toArray();
 
         }
 
@@ -105,19 +97,19 @@ class SysUserRoleService extends BaseService {
      */
     public function getByUser( $userId , $concatRole = FALSE ) {
 
-            $this->model = DB::table('sys_user_role')
+            $model = DB::table('sys_user_role')
             ->join('sys_role', 'sys_role.id' , '=' , 'sys_user_role.role_id' )
             ->where( 'sys_user_role.user_id' , $userId );
 
         if ( $concatRole ) {
-            $data = $this->model->first([
+            $data = $model->first([
                 'GROUP_CONCAT( sys_role.role_id ) AS role_id' ,
                 'GROUP_CONCAT( sys_role.name ) AS role_name' ,
                 'MAX(sys_role.rank) AS role_rank'
             ]);
         } else {
 
-            $data = $this->model->get( [
+            $data = $model->get( [
                 'sys_user_role.*' ,
                 'sys_role.name as role_name' ,
                 'sys_role.rank as role_rank'
@@ -136,7 +128,7 @@ class SysUserRoleService extends BaseService {
      */
     public function destroyByUser( $userId ) {
         try {
-            $this->model->where( 'user_id' , $userId )->delete();
+            $this->getModel()->where( 'user_id' , $userId )->delete();
 
             return ajax_arr( '删除成功' , 0 );
         } catch ( \Exception $e ) {
@@ -171,9 +163,8 @@ class SysUserRoleService extends BaseService {
 
         if ( ! empty( $needDelete ) ) {
             //删除取消的角色
-            $this->model->where( 'user_id' , $userId );
-            $this->model->where( 'role_id' , 'in' , $needDelete );
-            $this->model->delete();
+             $this->getModel()->where( 'user_id' , $userId )->whereIn( 'role_id' ,  $needDelete )->destroy();
+
         }
 
         if ( ! empty( $needAdd ) ) {
@@ -186,7 +177,7 @@ class SysUserRoleService extends BaseService {
                 ];
             }
 
-            $this->model->insert( $data );
+            $this->getModel()->insert( $data );
         }
 
         return ajax_arr( '更新成功' , 0 );

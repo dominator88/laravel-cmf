@@ -50,7 +50,7 @@ class SysRoleService extends BaseService {
     public static function instance() {
         if ( self::$instance == NULL ) {
             self::$instance        = new SysRoleService();
-            self::$instance->model = new SysRole();
+            self::$instance->setModel(new SysRole())  ;
         }
 
         return self::$instance;
@@ -88,15 +88,15 @@ class SysRoleService extends BaseService {
 
         $param = extend( $default, $param );
 
-         $this->model = $this->model->keyword($param['keyword'])->module($param['module'])->status($param['status'])
+         $model = $this->getModel()->keyword($param['keyword'])->module($param['module'])->status($param['status'])
             ->where('rank', '<', 10 );
 
 
         if ( $param['count'] ) {
-            return $this->model->count();
+            return $this->getModel()->count();
         } else {
-       //     $this->model = $this->model->select( $param['field'] );
-            $data =   $this->model->getAll($param)
+       //     $this->getModel() = $this->getModel()->select( $param['field'] );
+            $data =   $this->getModel()->getAll($param)
             ->orderBy(  $param['order'] ,$param['sort'] )->get()->toArray();
 
             return $data;
@@ -113,7 +113,7 @@ class SysRoleService extends BaseService {
      */
     function getByModule( $module ) {
 
-        $data = $this->model
+        $data = $this->getModel()
             ->where( 'id', '<>', config( 'backend.superAdminId' ) )
             ->module( $module )
             ->orderBy( 'rank' , 'desc')

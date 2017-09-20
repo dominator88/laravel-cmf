@@ -32,7 +32,7 @@ class SysUserService extends BaseService {
     public static function instance() {
         if ( self::$instance == NULL ) {
             self::$instance        = new SysUserService();
-            self::$instance->model = new SysUser();
+            self::$instance->setModel(new SysUser())  ;
 
         }
 
@@ -67,6 +67,7 @@ class SysUserService extends BaseService {
      * @return array|number
      */
     public function getByCond( $params ) {
+        $model  = $this->getModel();
         $default = [
             'field'     => [ '*' ] ,
             'module'    => 'backend' ,
@@ -90,15 +91,15 @@ class SysUserService extends BaseService {
             return $this->getMerSysUserByCond( $params );
         }
 
-        $this->model = $this->model->status($params['status'])->module($params['module'])->keyword($params['keyword']);
+        $model = $model->status($params['status'])->module($params['module'])->keyword($params['keyword']);
 
 
 
 
         if ( $params['count'] ) {
-            return $this->model->count();
+            return $model->count();
         } else {
-            $data =  $this->model
+            $data =  $model
                  ->orderBy( $params['sort'] ,  $params['order'])->get()->toArray();
 
         }
@@ -192,11 +193,11 @@ class SysUserService extends BaseService {
      */
     function uploadPwd( $id , $data ) {
         try {
-            $this->model->where( 'id' , $id )->update( $data );
+            $this->getModel()->where( 'id' , $id )->update( $data );
 
             return ajax_arr( '更新成功' , 0 );
         } catch ( \Exception $e ) {
-            //echo $this->model->getLastSql();
+
             return ajax_arr( $e->getMessage() , 500 );
         }
     }
@@ -219,7 +220,7 @@ class SysUserService extends BaseService {
             unset( $data['roles'] );
             $data['password'] = str2pwd( config( 'defaultPwd' ) );
 
-            $id = $this->model->insertGetId( $data );
+            $id = $this->getModel()->insertGetId( $data );
             if ( $id <= 0 ) {
                 throw new \Exception( '创建用户失败' );
             }
@@ -254,7 +255,7 @@ class SysUserService extends BaseService {
             }
 
             unset( $data['roles'] );
-            $ret = $this->model->where( 'id' , $id )->update( $data );
+            $ret = $this->getModel()->where( 'id' , $id )->update( $data );
 
             //更新用户角色
             $SysUserRole = SysUserRoleService::instance();
@@ -269,7 +270,7 @@ class SysUserService extends BaseService {
         } catch ( \Exception $e ) {
             DB::rollback();
 
-            //echo $this->model->getLastSql();
+            //echo $this->getModel()->getLastSql();
             return ajax_arr( $e->getMessage() , 500 );
         }
     }
@@ -282,6 +283,7 @@ class SysUserService extends BaseService {
      * @return array
      */
     public function destroy( $id ) {
+        $model = $this->getModel();
         try {
             if ( $id <= 2 ) {
                 throw new \Exception( '系统用户不能删除' );
@@ -291,7 +293,7 @@ class SysUserService extends BaseService {
             $model_user_role->destroy($id);
 
             //删除用户
-            $this->model->destroy($id);
+            $model->destroy($id);
 
             return ajax_arr( '删除成功' , 0 );
         } catch ( \Exception $e ) {
@@ -310,7 +312,7 @@ class SysUserService extends BaseService {
     public function resetPwd( $id , $pwd ) {
         try {
             $data['password'] = str2pwd( $pwd );
-            $row              = $this->model->where( 'id' , $id )->update( $data );
+            $row              = $this->getModel()->where( 'id' , $id )->update( $data );
             if ( $row <= 0 ) {
                 return ajax_arr( '未修改任何记录' , 500 );
             }

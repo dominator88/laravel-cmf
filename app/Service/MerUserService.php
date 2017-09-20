@@ -16,6 +16,7 @@ class MerUserService extends BaseService {
 
     //引入 GridTable trait
     use \App\Traits\Service\GridTable;
+    //use \App\Traits\Service\GridTable;
 
     const INSERT_CHECK_NICKNAME = TRUE; //注册是否检查昵称唯一
     const INSERT_CHECK_MERCHANT = TRUE;  //注册是否检查机构唯一
@@ -48,12 +49,15 @@ class MerUserService extends BaseService {
     //类实例
     private static $instance;
 
+
+
     //生成类单例
     public static function instance() {
         if ( self::$instance == NULL ) {
             self::$instance        = new MerUserService();
-            self::$instance->model = new  MerUser();
+            self::$instance->setModel(new MerUser()) ;
         }
+
 
         return self::$instance;
     }
@@ -92,8 +96,9 @@ class MerUserService extends BaseService {
      * @return array|number
      */
     function getByCond( $param ) {
+
         $default = [
-            'field'      => [] ,
+            'field'      => ['*'] ,
             'merId'      => '' ,
             'keyword'    => '' ,
             'phone'      => '' ,
@@ -113,55 +118,21 @@ class MerUserService extends BaseService {
 
         $param = extend( $default , $param );
 
-        if ( ! empty( $param['keyword'] ) ) {
-            $this->model->where( 'username|nickname|phone' , 'like' , "%{$param['keyword']}%" );
-        }
+        $model = $this->getModel()->keyword($param['keyword'])->merId($param['merId'])->phone($param['phone'])->username($param['username'])->nickname($param['nickname'])->email($param['email'])->status($param['status']);
 
-        if ( $param['merId'] !== '' ) {
-            $this->model->where( 'mer_id' , $param['merId'] );
-        }
-
-        if ( $param['phone'] !== '' ) {
-            $this->model->where( 'phone' , $param['phone'] );
-        }
-
-        if ( $param['username'] !== '' ) {
-            $this->model->where( 'username' , $param['username'] );
-        }
-
-        if ( $param['nickname'] !== '' ) {
-            $this->model->where( 'nickname' , $param['nickname'] );
-        }
-
-        if ( $param['email'] !== '' ) {
-            $this->model->where( 'email' , $param['email'] );
-        }
-
-        if ( $param['status'] !== '' ) {
-            $this->model->where( 'status' , $param['status'] );
-        }
-
-        if ( $param['excludeId'] !== '' ) {
-            $this->model->where( 'id' , 'neq' , $param['excludeId'] );
-        }
 
         if ( $param['count'] ) {
 
-            return $this->model->count();
+            return $model->count();
         }
 
-        $this->model->field( $param['field'] );
 
         if ( ! $param['getAll'] ) {
-            $this->model->limit( ( $param['page'] - 1 ) * $param['pageSize'] , $param['pageSize'] );
+            $model = $model->getAll($param);
         }
 
-        $order[] = "{$param['sort']} {$param['order']}";
-        $this->model->order( $order );
+        $data = $model->orderBy( $param['sort'] , $param['order'] )->get($param['field'])->toArray();
 
-        $data = $this->model->select();
-
-        //echo $this->model->getLastSql();
         if ( $param['withoutPwd'] ) {
             $data = $this->withoutPwd( $data );
         }
@@ -190,7 +161,8 @@ class MerUserService extends BaseService {
      * @return mixed
      */
     public function getForTest() {
-        return $this->model->where('for_test',1)->get();
+        $model = $this->getModel();
+        return $model->where('for_test',1)->get();
     }
 
     /**
@@ -374,7 +346,7 @@ class MerUserService extends BaseService {
         }
 
         try {
-            $id = $this->model->insertGetId( $data );
+            $id = $this->getModel()->insertGetId( $data );
 
             return ajax_arr( '添加成功' , 0 , [ 'id' => $id ] );
         } catch ( \Exception $e ) {
@@ -413,7 +385,7 @@ class MerUserService extends BaseService {
         $data['nickname'] = $data['email'];
 
         try {
-            $id = $this->model->insertGetId( $data );
+            $id = $this->getModel()->insertGetId( $data );
 
             return ajax_arr( '添加成功' , 0 , [ 'id' => $id ] );
         } catch ( \Exception $e ) {
@@ -449,7 +421,7 @@ class MerUserService extends BaseService {
 
         Db::startTrans();
         try {
-            $id = $this->model->insertGetId( $data );
+            $id = $this->getModel()->insertGetId( $data );
             if ( $id <= 0 ) {
                 throw new \Exception( '创建用户失败' );
             }
@@ -499,7 +471,7 @@ class MerUserService extends BaseService {
                 return ajax_arr( '原密码不正确' , 400 );
             }
 
-            $rows = $this->model->where( 'id' , $id )->update( [
+            $rows = $this->getModel()->where( 'id' , $id )->update( [
                 'password' => str2pwd( $pwd )
             ] );
             if ( $rows == 0 ) {
@@ -513,7 +485,7 @@ class MerUserService extends BaseService {
     }
 
     public function getByPhone( $merId , $phone ) {
-        $data = $this->model
+        $data = $this->getModel()
             ->where( 'mer_id' , $merId )
             ->where( 'phone' , $phone )
             ->find();
@@ -522,7 +494,7 @@ class MerUserService extends BaseService {
     }
 
     public function getByEmail( $merId , $email ) {
-        $data = $this->model
+        $data = $this->getModel()
             ->where( 'mer_id' , $merId )
             ->where( 'email' , $email )
             ->find();
@@ -541,7 +513,7 @@ class MerUserService extends BaseService {
      */
     public function resetPwdByPhone( $merId , $phone , $pwd ) {
         try {
-            $this->model
+            $this->getModel()
                 ->where( 'mer_id' , $merId )
                 ->where( 'phone' , $phone )
                 ->update( [
@@ -556,7 +528,7 @@ class MerUserService extends BaseService {
 
     public function resetPwdByEmail( $merId , $email , $pwd ) {
         try {
-            $this->model
+            $this->getModel()
                 ->where( 'mer_id' , $merId )
                 ->where( 'email' , $email )
                 ->update( [
@@ -597,14 +569,17 @@ class MerUserService extends BaseService {
         }
 
         try {
-            $rows = $this->model->where( 'id' , $id )->update( $data );
+//$this->getModel() = new MerUser(); $this->getModel()->where( 'id' , $id );
+
+            $rows = $this->getModel()->where( 'id' , $id )->update($data);
+
             if ( $rows == 0 ) {
                 return ajax_arr( '未修改任何数据' , 0 );
             }
 
             return ajax_arr( '修改成功' , 0 );
         } catch ( \Exception $e ) {
-            return ajax_arr( $e->getMessage() . $this->model->getLastSql() , 500 );
+            return ajax_arr( $e->getMessage() . $this->getModel()->toSql() , 500 );
         }
     }
 
@@ -618,7 +593,7 @@ class MerUserService extends BaseService {
      */
     public function resetPwd( $id , $pwd ) {
         try {
-            $this->model->where( 'id' , $id )->update( [
+            $this->getModel()->where( 'id' , $id )->update( [
                 'password' => str2pwd( $pwd )
             ] );
 
@@ -636,7 +611,7 @@ class MerUserService extends BaseService {
      * @return mixed
      */
     public function getBucksByUser( $id ) {
-        return $this->model
+        return $this->getModel()
             ->where( 'id' , $id )
             ->value( 'bucks' );
     }
@@ -658,7 +633,7 @@ class MerUserService extends BaseService {
         }
 
         try {
-            $this->model->where( 'id' , $userId )->update( [
+            $this->getModel()->where( 'id' , $userId )->update( [
                 'bucks' => [ 'exp' , "bucks - $payAmount" ]
             ] );
 
@@ -689,7 +664,7 @@ class MerUserService extends BaseService {
         $bucks = $this->getBucksByUser( $userId );
 
         try {
-            $ret = $this->model->where( 'id' , $userId )->update( [
+            $ret = $this->getModel()->where( 'id' , $userId )->update( [
                 'bucks' => [ 'exp' , "bucks + $amount" ]
             ] );
 
@@ -716,7 +691,7 @@ class MerUserService extends BaseService {
      * @return array
      */
     public function bindEmail( $merId , $userId , $email ) {
-        $oldData = $this->model
+        $oldData = $this->getModel()
             ->where( 'mer_id' , $merId )
             ->where( 'id' , '<>' , $userId )
             ->where( 'email' , $email )
@@ -726,7 +701,7 @@ class MerUserService extends BaseService {
             return ajax_arr( '邮箱已经被占用了' , 500 );
         }
         try {
-            $this->model
+            $this->getModel()
                 ->where( 'id' , $userId )
                 ->update( [
                     'email' => $email
@@ -748,7 +723,7 @@ class MerUserService extends BaseService {
      * @return array
      */
     public function bindPhone( $merId , $userId , $phone ) {
-        $oldData = $this->model
+        $oldData = $this->getModel()
             ->where( 'mer_id' , $merId )
             ->where( 'id' , '<>' , $userId )
             ->where( 'phone' , $phone )
@@ -758,7 +733,7 @@ class MerUserService extends BaseService {
             return ajax_arr( '手机号已经被占用了' , 500 );
         }
         try {
-            $this->model
+            $this->getModel()
                 ->where( 'id' , $userId )
                 ->update( [
                     'phone' => $phone

@@ -10,7 +10,7 @@ trait GridTable {
    * @return mixed
    */
   public function getById( $id ) {
-    return $this->model->find( $id );
+    return $this->getModel()->find( $id );
   }
   
   /**
@@ -26,7 +26,7 @@ trait GridTable {
         throw new \Exception( '数据不能为空' );
       }
       
-      $id = $this->model->insertGetId( $data );
+      $id = $this->getModel()->insertGetId( $data );
       
       return ajax_arr( '创建成功' , 0 , [ 'id' => $id ] );
     } catch ( \Exception $e ) {
@@ -44,7 +44,7 @@ trait GridTable {
    */
   public function update( $id , $data ) {
     try {
-      $rows = $this->model->where( 'id' , $id )->update( $data );
+      $rows = $this->getModel()->where( 'id' , $id )->update( $data );
       if ( $rows == 0 ) {
         return ajax_arr( "未更新任何数据" , 0 );
       }
@@ -64,7 +64,7 @@ trait GridTable {
    */
   public function destroy( $ids ) {
     try {
-      $rows = $this->model->destroy( $ids );
+      $rows = $this->getModel()->destroy( $ids );
       if ( $rows == 0 ) {
         return ajax_arr( "未删除任何数据" , 0 );
       }

@@ -36,7 +36,7 @@ class SysFuncService extends BaseService{
     public static function instance(){
         if ( self::$instance == NULL ) {
             self::$instance  = new SysFuncService();
-            self::$instance->model = new SysFunc();
+            self::$instance->setModel(new SysFunc());
         }
 
         return self::$instance;
@@ -93,7 +93,7 @@ class SysFuncService extends BaseService{
         ];
         $param = extend( $default , $param);
 
-        $data = $this->model->status($param['status'])->module($param['module'])->isMenu($param['isMenu'])
+        $data = $this->getModel()->status($param['status'])->module($param['module'])->isMenu($param['isMenu'])
 
             ->orderBy( 'level', 'ASC')
             ->orderBy( 'sort', 'ASC')
@@ -134,7 +134,7 @@ class SysFuncService extends BaseService{
     private function _getMenuByRoles( $roleIds , $module ) {
         $key = self::DEFAULT_KEY;
 
-        $data = $this->model
+        $data = $this->getModel()
             ->alias( 'f' )
             ->field( 'DISTINCT f.id , f.sort , f.pid , f.name , f.icon , f.uri , f.level' )
             ->where( 'f.is_menu' , 1 )

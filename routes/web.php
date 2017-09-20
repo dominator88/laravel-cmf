@@ -105,6 +105,28 @@ Route::group(['prefix'=>'backend/sysarea','namespace'=>'Backend'],function(){
 
 });
 
+Route::group(['prefix'=>'backend/meruser','namespace'=>'Backend'],function(){
+
+    Route::get('index' , 'MerUser@index');
+
+    Route::get('read' , 'MerUser@read');
+
+    Route::post('get_permission' , 'MerUser@get_permission');
+
+    Route::post('get_privilegedata' , 'MerUser@get_privilegeData');
+
+    Route::post('update_permission' , 'MerUser@update_permission');
+
+    Route::post('update/{id}' ,   'MerUser@update');
+
+    Route::post('insert' ,   'MerUser@insert');
+
+    Route::post('destroy' ,   'MerUser@destroy');
+
+    Route::get('reset_pwd/{id}' , 'MerUser@reset_pwd');
+
+});
+
 //接口模拟器
 Route::group(['prefix'=>'backend/simulator','namespace'=>'Backend'],function(){
 

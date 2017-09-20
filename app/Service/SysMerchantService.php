@@ -34,7 +34,7 @@ class SysMerchantService extends BaseService {
     public static function instance() {
         if ( self::$instance == NULL ) {
             self::$instance        = new SysMerchantService();
-            self::$instance->model = new SysMerchant();
+            self::$instance->setModel(new SysMerchant())  ;
         }
 
         return self::$instance;
@@ -87,34 +87,34 @@ class SysMerchantService extends BaseService {
         $param = extend( $default, $param );
 
         if ( ! empty( $param['keyword'] ) ) {
-            $this->model->where( 'name', 'like', "%{$param['keyword']}%" );
+            $this->getModel()->where( 'name', 'like', "%{$param['keyword']}%" );
         }
 
         if ( $param['status'] !== '' ) {
-            $this->model->where( 'status', $param['status'] );
+            $this->getModel()->where( 'status', $param['status'] );
         }
 
         if ( $param['count'] ) {
-            return $this->model->count();
+            return $this->getModel()->count();
         }
 
         $param['field'] = ['*' , 'full_area_name( area ) as full_area_name'];
-        $this->model->field( $param['field'] );
+        $this->getModel()->field( $param['field'] );
 
         if ( ! $param['getAll'] ) {
-            $this->model->limit( ( $param['page'] - 1 ) * $param['pageSize'], $param['pageSize'] );
+            $this->getModel()->limit( ( $param['page'] - 1 ) * $param['pageSize'], $param['pageSize'] );
         }
 
         $order[] = "{$param['sort']} {$param['order']}";
-        $this->model->order( $order );
+        $this->getModel()->order( $order );
 
-        $data = $this->model->select();
+        $data = $this->getModel()->select();
 
         if ( $param['withSysUser'] ) {
             $data = $this->withSysUser( $data );
         }
 
-        //echo $this->model->getLastSql();
+        //echo $this->getModel()->getLastSql();
 
         return $data ? $data : [];
     }
@@ -162,7 +162,7 @@ class SysMerchantService extends BaseService {
      * @return mixed
      */
     public function getForTest() {
-        return $this->model->where( 'for_test', 1 )->select();
+        return $this->getModel()->where( 'for_test', 1 )->select();
     }
 
     /**

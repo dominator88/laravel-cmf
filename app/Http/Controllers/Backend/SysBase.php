@@ -208,28 +208,28 @@ class SysBase extends  Controller{
             'getAll' => TRUE
         ] );
 
-        return response()->json( $result );
+        return  json( $result );
     }
 
     public function read_area(){
 
     }
 
-    public function insert(){
-        $data = request()->except('_token');
-        return response()->json($this->service->insert($data));
+    public function insert(Request $request){
+        $data = $request->except('_token');
+        return  json($this->service->insert($data));
     }
 
-    public function update(){
-        $id   = request()->id;
-        $data = request()->except('_token');
+    public function update(Request $request ,$id){
 
-        return response()->json( $this->service->update( $id , $data ) );
+        $data = $request->except('_token' );
+
+        return json( $this->service->update( $id , $data ) );
     }
 
-    public function destroy(){
-        $data = request()->all();
-        return response()->json( $this->service->destroy( $data['ids']));
+    public function destroy(Request $request){
+        $data = $request->all();
+        return json( $this->service->destroy( $data['ids']));
     }
 
 
