@@ -186,7 +186,7 @@ class SysUserRoleService extends BaseService {
                 ];
             }
 
-            $this->model->insertAll( $data );
+            $this->model->insert( $data );
         }
 
         return ajax_arr( '更新成功' , 0 );

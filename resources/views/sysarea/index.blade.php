@@ -1,4 +1,4 @@
-@extends('public.layout');
+@extends('public.layout')
 @section('content')
 <!-- BEGIN CONTENT BODY -->
 <div class="page-content">

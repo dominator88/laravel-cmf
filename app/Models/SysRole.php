@@ -11,4 +11,6 @@ class SysRole extends Model
     public $primaryKey = 'id';
 
     public $timestamps = false ;
+
+    use \App\Traits\Service\Scope;
 }

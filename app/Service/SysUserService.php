@@ -99,10 +99,10 @@ class SysUserService extends BaseService {
             return $this->model->count();
         } else {
             $data =  $this->model
-           //      ->getAll($params)
                  ->orderBy( $params['sort'] ,  $params['order'])->get()->toArray();
 
         }
+
 
         if ( ! $params['withPwd'] ) {
             foreach ( $data as &$item ) {

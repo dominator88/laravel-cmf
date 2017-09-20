@@ -176,8 +176,9 @@ var SysFunc = {
 	delData : function (ids) {
 		var data = {
 			ids : ids,
-			_token : self.token
+			_token : this.token
 		};
+
 
 		sure.init('是否删除?' , function () {
 			$.post(Param.uri.destroy , data)

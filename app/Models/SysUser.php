@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class SysUser extends Model
+class SysUser extends Authenticatable
 {
-    public $table = 'sys_user';
+    use Notifiable;
+    protected $table = 'sys_user';
 
     public $primaryKey = 'id';
 
@@ -14,5 +17,7 @@ class SysUser extends Model
 
     use \App\Traits\Service\Scope;
 
-
+    public function username(){
+        return 'username';
+    }
 }

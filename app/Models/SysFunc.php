@@ -12,6 +12,11 @@ class SysFunc extends Model
 
     public $timestamps = false ;
 
+    use \App\Traits\Service\Scope;
 
+    public function scopeIsMenu($query , $param){
+        if($param)
+            return $query->where('is_menu',$param);
+    }
 
 }

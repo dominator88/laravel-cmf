@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Backend;
 use App\Service\SysFuncPrivilegeService;
 use App\Service\SysFuncService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 class SysFunc extends Backend{

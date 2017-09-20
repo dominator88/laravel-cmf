@@ -81,9 +81,6 @@ class SysAreaService extends BaseService {
         $data =  $this->model->orderBy( $param['sort'] ,  $param['order'])->get()->toArray();
 
 
-
-        //echo $this->model->getLastSql();
-
         return $data ? $data : [];
     }
 

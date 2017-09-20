@@ -9,6 +9,7 @@ namespace App\Http\Controllers\Backend;
 
 use Illuminate\Http\Request;
 use App\Models\SysFunc;
+use Illuminate\Support\Facades\Auth;
 
 class Index extends Backend{
     public function __construct(Request $request)
@@ -20,7 +21,7 @@ class Index extends Backend{
     public function index(Request $request){
         $this->_init( '首页' );
 
-      //  var_dump($request->server());exit;
+    
        return $this->_displayWithLayout('index/index');
 
     }

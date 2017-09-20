@@ -9,6 +9,7 @@ namespace App\Http\Controllers\Backend;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use App\Service\SysFuncService;
 
@@ -19,20 +20,21 @@ class Backend extends SysBase{
     public function __construct(Request $request)
     {
         parent::__construct($request);
-        $this->user = session(config('backend.sessionName') );
-        $this->middleware('guest');
+        $this->middleware('auth');
+
     }
 
     public function _init($pageTitle = '新页面'){
         parent::_init($pageTitle);
         $SysFuncService = SysFuncService::instance();
       //  var_dump($SysFuncService->getMenuByRoles(1,'backend'));
+        $this->user = Auth::user();
         $this->_addData(
             'menuData',
         //暂定超级管理员
             $SysFuncService->getMenuByRoles(
-                1,
-                'backend' )
+                Auth::id(),
+                $this->module )
         );
         $this->_addData( 'user', $this->user );
 

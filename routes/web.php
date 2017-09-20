@@ -14,7 +14,12 @@
 Route::get('', function () {
     return 'Hello word!';
 });
-
+/*Route::group( ['prefix'=>'auth','namespace'=>'Auth'] , function() {
+    Route::get('signin', 'LoginController@index');
+    Route::get('signup', 'index/auth/signup');
+    Route::get('signout', 'index/auth/signout');
+    Route::get('sendcaptcha', 'index/auth/sendCaptcha');
+});*/
 
 Route::get('backend/index/index' ,  'Backend\Index@index');
 
@@ -110,3 +115,10 @@ Route::group(['prefix'=>'backend/simulator','namespace'=>'Backend'],function(){
     Route::get('read_params' , 'Simulator@read_params');
 
 });
+Route::group(['prefix' => 'backend'] , function(){
+    Auth::routes();
+});
+
+
+Route::get('/home', 'HomeController@index')->name('home');
+

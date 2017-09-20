@@ -93,22 +93,8 @@ class SysFuncService extends BaseService{
         ];
         $param = extend( $default , $param);
 
+        $data = $this->model->status($param['status'])->module($param['module'])->isMenu($param['isMenu'])
 
-        $data =  $this->model->where(function ($query) use ($param) {
-                if( $param['status'] !== '') {
-                 $query->where('status',$param['status']);
-                }
-            })
-            ->where(function ($query) use ($param) {
-                if( $param['module'] !== ''){
-                 $query->where('module',$param['module']);
-                }
-            })
-            ->where(function ($query) use ($param) {
-                if($param['isMenu'] !== ''){
-                   $query->where('is_menu',$param['isMenu']);
-                }
-            })
             ->orderBy( 'level', 'ASC')
             ->orderBy( 'sort', 'ASC')
             ->get()

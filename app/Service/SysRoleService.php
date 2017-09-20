@@ -88,19 +88,7 @@ class SysRoleService extends BaseService {
 
         $param = extend( $default, $param );
 
-        /*if ( ! empty( $param['keyword'] ) ) {
-            $this->model = $this->model->where( 'name', 'like', "%{$param['keyword']}%" );
-        }*/
-
-         $this->model->when( ! empty( $param['keyword'] ) , function($query) use ($param){
-            return $query->where('name', 'like', "%{$param['keyword']}%");
-        } )
-            ->when($param['module'] !== '' , function($query) use ($param){
-            return $query->where('module', $param['module'] );
-        } )
-            ->when( $param['status'] !== ''  , function($query) use ($param){
-                return $query->where('status', $param['status']);
-            })
+         $this->model = $this->model->keyword($param['keyword'])->module($param['module'])->status($param['status'])
             ->where('rank', '<', 10 );
 
 
@@ -108,9 +96,7 @@ class SysRoleService extends BaseService {
             return $this->model->count();
         } else {
        //     $this->model = $this->model->select( $param['field'] );
-            $data =   $this->model->when($param['getAll'] === FALSE , function ($query) use ($param){
-                return $query->skip( ( $param['page'] - 1 ) * $param['pageSize'])->take( $param['pageSize'] );
-            })
+            $data =   $this->model->getAll($param)
             ->orderBy(  $param['order'] ,$param['sort'] )->get()->toArray();
 
             return $data;
@@ -128,12 +114,11 @@ class SysRoleService extends BaseService {
     function getByModule( $module ) {
 
         $data = $this->model
-            ->where( 'id', 'neq', config( 'superAdminId' ) )
-            ->where( 'module', $module )
+            ->where( 'id', '<>', config( 'backend.superAdminId' ) )
+            ->module( $module )
             ->orderBy( 'rank' , 'desc')
             ->get()->toArray();
 
-        //echo $this->model->getLastSql();
         return $data ;
     }
 }

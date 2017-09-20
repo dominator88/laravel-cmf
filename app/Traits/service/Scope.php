@@ -8,9 +8,9 @@
 
 trait Scope{
 
-    public function scopeModule($query , $param = 0 ){
+    public function scopeModule($query , $param = '' ){
 
-        if(!$param && $param !== 0)
+        if( $param !== '')
             return $query->where('module',$param);
 
     }
