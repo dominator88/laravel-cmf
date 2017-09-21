@@ -67,7 +67,7 @@ class SysUserService extends BaseService {
      * @return array|number
      */
     public function getByCond( $params ) {
-        $model  = $this->getModel();
+
         $default = [
             'field'     => [ '*' ] ,
             'module'    => 'backend' ,
@@ -91,7 +91,7 @@ class SysUserService extends BaseService {
             return $this->getMerSysUserByCond( $params );
         }
 
-        $model = $model->status($params['status'])->module($params['module'])->keyword($params['keyword']);
+        $model = $this->getModel()->status($params['status'])->module($params['module'])->keyword($params['keyword']);
 
 
 

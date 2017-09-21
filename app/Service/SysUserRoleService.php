@@ -163,7 +163,7 @@ class SysUserRoleService extends BaseService {
 
         if ( ! empty( $needDelete ) ) {
             //删除取消的角色
-             $this->getModel()->where( 'user_id' , $userId )->whereIn( 'role_id' ,  $needDelete )->destroy();
+             $this->getModel()->where( 'user_id' , $userId )->whereIn( 'role_id' ,  $needDelete )->delete();
 
         }
 

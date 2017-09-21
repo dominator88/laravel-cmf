@@ -26,6 +26,8 @@ trait Scope{
             return $query->where('keyword' , 'like' , "%{$param}%");
     }
 
+
+
     public function scopeGetAll($query , $params = ['getAll'=>false]){
         if(!$params['getAll'])
             return $query->skip(($params['page']-1) * $params['pageSize'] )->take($params['pageSize'] );

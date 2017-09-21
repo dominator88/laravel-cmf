@@ -33,13 +33,13 @@
                     <!-- 查询关键字 start -->
                     <div class="form-group">
                         <label>关键字: </label>
-                        <input type="text" class="form-control" name="keyword" placeholder="查询关键字">
+                        <input type="text" class="form-control" name="keyword" id="keyword" placeholder="查询关键字">
                     </div>
                     <!-- 查询关键字 end -->
                     <!-- 查询状态 start -->
                     <div class="form-group">
                         <label>状态: </label>
-                        <select class="form-control" name="status">
+                        <select class="form-control" name="status" id="status">
                             <option selected="" value="">不限</option>
                             <option value="0">禁用</option>
                             <option value="1">启用</option>

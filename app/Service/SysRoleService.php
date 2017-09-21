@@ -93,10 +93,10 @@ class SysRoleService extends BaseService {
 
 
         if ( $param['count'] ) {
-            return $this->getModel()->count();
+            return $model->count();
         } else {
        //     $this->getModel() = $this->getModel()->select( $param['field'] );
-            $data =   $this->getModel()->getAll($param)
+            $data =   $model->getAll($param)
             ->orderBy(  $param['order'] ,$param['sort'] )->get()->toArray();
 
             return $data;

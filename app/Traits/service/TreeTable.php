@@ -72,7 +72,7 @@ trait TreeTable {
 			if ( empty( $data ) ) {
 				throw new \Exception( '数据不能为空' );
 			}
-			
+
 			$data['level'] = $this->getLevel( $data['pid'] );
 			$id            = $this->getModel()->insertGetId( $data );
 

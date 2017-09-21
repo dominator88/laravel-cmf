@@ -17,6 +17,14 @@ class SysUser extends Authenticatable
 
     use \App\Traits\Service\Scope;
 
+    public function scopeKeyword($query , $param){
+        if($param)
+            return $query->where(function($query) use ($param){
+                $query->orWhere('username' , 'like' , "%{$param}%")->orWhere( 'phone' , 'like' , "%{$param}%");
+
+            });
+    }
+
     public function username(){
         return 'username';
     }

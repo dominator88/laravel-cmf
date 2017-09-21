@@ -8,6 +8,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Service\SysMerchantService;
+use Illuminate\Http\Request;
 
 class SysMerchant extends Backend {
 

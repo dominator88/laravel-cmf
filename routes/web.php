@@ -105,6 +105,28 @@ Route::group(['prefix'=>'backend/sysarea','namespace'=>'Backend'],function(){
 
 });
 
+
+//商品分类
+Route::group(['prefix'=>'backend/mergoodscatalog','namespace'=>'Backend'],function(){
+
+    Route::get('index' , 'MerGoodsCatalog@index');
+
+    Route::get('read' , 'MerGoodsCatalog@read');
+
+    Route::post('get_permission' , 'MerGoodsCatalog@get_permission');
+
+    Route::post('get_privilegedata' , 'MerGoodsCatalog@get_privilegeData');
+
+    Route::post('update_permission' , 'MerGoodsCatalog@update_permission');
+
+    Route::post('update/{id}' ,   'MerGoodsCatalog@update');
+
+    Route::post('insert' ,   'MerGoodsCatalog@insert');
+
+    Route::post('destroy' ,   'MerGoodsCatalog@destroy');
+
+});
+
 Route::group(['prefix'=>'backend/meruser','namespace'=>'Backend'],function(){
 
     Route::get('index' , 'MerUser@index');

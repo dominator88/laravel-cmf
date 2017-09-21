@@ -16,7 +16,7 @@ class MerUserService extends BaseService {
 
     //引入 GridTable trait
     use \App\Traits\Service\GridTable;
-    //use \App\Traits\Service\GridTable;
+
 
     const INSERT_CHECK_NICKNAME = TRUE; //注册是否检查昵称唯一
     const INSERT_CHECK_MERCHANT = TRUE;  //注册是否检查机构唯一
