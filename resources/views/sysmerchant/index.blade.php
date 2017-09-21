@@ -31,6 +31,7 @@
             <div class="portlet-body">
                 <!-- Start Search Form -->
                 <form class="form-inline" id="searchForm">
+                    {!! csrf_field() !!}
                     <!-- 查询关键字 start -->
                     <div class="form-group">
                         <label>关键字: </label>

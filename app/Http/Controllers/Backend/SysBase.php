@@ -8,6 +8,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Service\SysAreaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -211,8 +212,22 @@ class SysBase extends  Controller{
         return  json( $result );
     }
 
-    public function read_area(){
+    public function read_area($pid){
+        $SysArea = SysAreaService::instance();
 
+
+        $cacheName = config( 'backend.areaCachePrefix' ) . $pid;
+
+        $data = cache( $cacheName );
+        if ( empty( $data ) ) {
+            $data = $SysArea->getByCond( [
+                'pid'    => $pid ,
+                'getAll' => TRUE
+            ] );
+            cache( $cacheName , $data , 86400 );
+        }
+
+        return json( ajax_arr( '查询成功' , 0 , $data ) );
     }
 
     public function insert(Request $request){

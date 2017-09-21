@@ -22,7 +22,7 @@ class SysMerchant extends Backend {
     }
 
     //页面入口
-    public function index() {
+    public function index(Request $request) {
         $this->_init( '机构管理' );
 
         //uri
@@ -36,12 +36,12 @@ class SysMerchant extends Backend {
 
         //查询参数
         $this->_addParam( 'query' , [
-            'keyword'  => input( 'param.keyword' , '' ) ,
-            'status'   => input( 'param.status' , '' ) ,
-            'page'     => input( 'param.page' , 1 ) ,
-            'pageSize' => input( 'param.pageSize' , 10 ) ,
-            'sort'     => input( 'param.sort' , 'id' ) ,
-            'order'    => input( 'param.order' , 'DESC' ) ,
+            'keyword'  => $request->input( 'keyword' , '' ) ,
+            'status'   => $request->input( 'status' , '' ) ,
+            'page'     => $request->input( 'page' , 1 ) ,
+            'pageSize' => $request->input( 'pageSize' , 10 ) ,
+            'sort'     => $request->input( 'sort' , 'id' ) ,
+            'order'    => $request->input( 'order' , 'DESC' ) ,
         ] );
 
         //上传参数
@@ -76,21 +76,21 @@ class SysMerchant extends Backend {
         $this->_addJsLib( 'static/plugins/dmg-ui/TableGrid.js' );
 
 
-        return $this->_displayWithLayout();
+        return $this->_displayWithLayout('sysmerchant.index');
     }
 
     /**
      * 读取
-     * @return \think\response\Json
+     * @return \Json
      */
-    function read() {
+    function read(Request $request) {
         $config = [
-            'status'      => input( 'get.status' , '' ) ,
-            'keyword'     => input( 'get.keyword' , '' ) ,
-            'page'        => input( 'get.page' , 1 ) ,
-            'pageSize'    => input( 'get.pageSize' , 10 ) ,
-            'sort'        => input( 'get.sort' , 'id' ) ,
-            'order'       => input( 'get.order' , 'DESC' ) ,
+            'status'      => $request->input( 'status' , '' ) ,
+            'keyword'     => $request->input( 'keyword' , '' ) ,
+            'page'        => $request->input( 'page' , 1 ) ,
+            'pageSize'    => $request->input( 'pageSize' , 10 ) ,
+            'sort'        => $request->input( 'sort' , 'id' ) ,
+            'order'       => $request->input( 'order' , 'DESC' ) ,
             'withSysUser' => TRUE
         ];
 
@@ -101,8 +101,8 @@ class SysMerchant extends Backend {
         return json( ajax_arr( '查询成功' , 0 , $data ) );
     }
 
-    function read_detail() {
-        $id = input( 'get.id' , '' );
+    function read_detail($id) {
+
 
         $merData = $this->service->getById( $id );
 
@@ -116,7 +116,7 @@ class SysMerchant extends Backend {
         $this->_addJsLib( 'static/js/backend/SysMerchantDetail.js' );
         $this->_addJsCode( 'SysMerchantDetail.init()' );
 
-        return $this->_displayWithLayout( 'detail' );
+        return $this->_displayWithLayout( 'sysmerchant.detail' );
     }
 
 

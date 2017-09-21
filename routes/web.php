@@ -127,6 +127,44 @@ Route::group(['prefix'=>'backend/mergoodscatalog','namespace'=>'Backend'],functi
 
 });
 
+//机构管理
+Route::group(['prefix'=>'backend/sysmerchant','namespace'=>'Backend'],function(){
+
+    Route::get('index' , 'SysMerchant@index');
+
+    Route::get('read' , 'SysMerchant@read');
+
+
+
+    Route::get('read_detail/{id}' , 'SysMerchant@read_detail');
+
+    Route::get('read_area/{pid}' , 'SysMerchant@read_area');
+
+    Route::post('update/{id}' ,   'SysMerchant@update');
+
+    Route::post('insert' ,   'SysMerchant@insert');
+
+    Route::post('destroy' ,   'SysMerchant@destroy');
+
+});
+
+//系统用户
+Route::group(['prefix'=>'backend/mersysuser','namespace'=>'Backend'],function(){
+
+    Route::get('index/{merId?}' , 'MerSysUser@index');
+
+    Route::get('read' , 'MerSysUser@read');
+
+    Route::post('update/{id}' ,   'MerSysUser@update');
+
+    Route::post('insert/{merId}' ,   'MerSysUser@insert');
+
+    Route::post('destroy/{merId}' ,   'MerSysUser@destroy');
+
+    Route::get('reset_pwd/{id}' ,   'MerSysUser@reset_pwd');
+
+});
+
 Route::group(['prefix'=>'backend/meruser','namespace'=>'Backend'],function(){
 
     Route::get('index' , 'MerUser@index');

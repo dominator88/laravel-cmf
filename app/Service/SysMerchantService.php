@@ -85,36 +85,22 @@ class SysMerchantService extends BaseService {
         ];
 
         $param = extend( $default, $param );
+        $model = $this->getModel()->keyword($param['keyword'])->status();
 
-        if ( ! empty( $param['keyword'] ) ) {
-            $this->getModel()->where( 'name', 'like', "%{$param['keyword']}%" );
-        }
-
-        if ( $param['status'] !== '' ) {
-            $this->getModel()->where( 'status', $param['status'] );
-        }
 
         if ( $param['count'] ) {
-            return $this->getModel()->count();
+            return $model->count();
         }
 
-        $param['field'] = ['*' , 'full_area_name( area ) as full_area_name'];
-        $this->getModel()->field( $param['field'] );
+        $param['field'] = ['*' ];
 
-        if ( ! $param['getAll'] ) {
-            $this->getModel()->limit( ( $param['page'] - 1 ) * $param['pageSize'], $param['pageSize'] );
-        }
+        $data = $model->getAll($param)->orderBy( $param['sort'] , $param['order'])->get($param['field'])->toArray();
 
-        $order[] = "{$param['sort']} {$param['order']}";
-        $this->getModel()->order( $order );
-
-        $data = $this->getModel()->select();
 
         if ( $param['withSysUser'] ) {
             $data = $this->withSysUser( $data );
         }
 
-        //echo $this->getModel()->getLastSql();
 
         return $data ? $data : [];
     }
@@ -134,17 +120,21 @@ class SysMerchantService extends BaseService {
             $merIds[] = $item['id'];
         }
 
-        $userData = db('MerSysUser')
-            ->alias('msu')
-            ->field(['msu.*' , 'su.username' , 'su.phone'])
-            ->join('sys_user su' , 'su.id = msu.sys_user_id' , 'left')
-            ->where('msu.mer_id' , 'in' , $merIds )
-            ->select();
+        $SysMerchant = SysMerchantService::instance();
+        $sysMerchantData =  $SysMerchant->getModel()->whereIn('id' ,$merIds);
 
         $newUserData = [];
-        foreach ( $userData as $item ) {
-            $newUserData[$item['mer_id']][] = $item ;
+        foreach($sysMerchantData as $sm){
+            $tmp_user = $sm->sysUsers()->toArray();
+            foreach($tmp_user as $u){
+                 $newUserData[$sm->mer_id][] =  $u;
+            }
         }
+
+
+       /* foreach ( $userData as $item ) {
+            $newUserData[$item['mer_id']][] = $item ;
+        }*/
 
         foreach ( $data as &$row ) {
             if( isset( $newUserData[$row['id']] ) ) {

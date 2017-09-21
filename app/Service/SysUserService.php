@@ -143,30 +143,15 @@ class SysUserService extends BaseService {
      * @return array
      */
     private function getMerSysUserByCond( $params ) {
-        $model = db( 'mer_sys_user' );
-
-        $model->alias( 'msu' )
-            ->where( 'msu.mer_id' , $params['merId'] )
-            ->join( 'sys_user u' , 'u.id = msu.sys_user_id' , 'left' );
-
-        if ( $params['status'] !== '' ) {
-            $model->where( 'u.status' , $params['status'] );
-        }
+        $sysMerchant = SysMerchantService::instance();
+        $model = $sysMerchant->getModel()->find($params['merId'])->sysUsers()->status($params['status']);
 
         if ( $params['count'] ) {
             return $model->count();
         } else {
         //    $model->field( 'u.*' );
+            $data = $model->getAll($params)->orderBy($params['sort'] ,$params['order'])->get()->toArray();
 
-            if ( ! $params['getAll'] ) {
-                $model->limit( ( $params['page'] - 1 ) * $params['pageSize'] , $params['pageSize'] );
-            }
-
-
-            $model->orderBy("u.{$params['sort']}", "{$params['order']}");
-
-            $data = $model->get()->toArray();
-//      echo $model->getLastSql();
         }
 
         if ( ! $params['withPwd'] ) {

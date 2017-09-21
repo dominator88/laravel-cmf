@@ -17,6 +17,10 @@ class SysUser extends Authenticatable
 
     use \App\Traits\Service\Scope;
 
+    public function sysMerchants(){
+        return $this->belongsToMany('App\Models\SysMerchant' , 'mer_sys_user' , 'sys_user_id' ,'mer_id');
+    }
+
     public function scopeKeyword($query , $param){
         if($param)
             return $query->where(function($query) use ($param){
