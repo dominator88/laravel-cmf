@@ -81,7 +81,7 @@ class SysRolePermissionService extends BaseService {
      * @return array
      */
     public function getPrivilegeByRole( $roleId ) {
-        $data = $this->getModel()->where( 'role_id', $roleId )->select();
+        $data = $this->getModel()->where( 'role_id', $roleId )->get()->toArray();
 
         if ( empty( $data ) ) {
             return $data;
@@ -193,7 +193,8 @@ class SysRolePermissionService extends BaseService {
                 $this->getModel()
                     ->where( 'role_id', $roleId )
                     ->whereIn( 'privilege_id',  $needDelete )
-                    ->delete();;
+                    ->delete();
+             //   echo $this->getModel()->toSql();
             }
             if ( ! empty( $needAdd ) ) {
                 $addData = [];

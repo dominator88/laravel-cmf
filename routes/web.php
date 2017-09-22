@@ -148,6 +148,49 @@ Route::group(['prefix'=>'backend/sysmerchant','namespace'=>'Backend'],function()
 
 });
 
+//机构功能
+Route::group(['prefix'=>'backend/merfunc','namespace'=>'Backend'],function(){
+
+    Route::get('index' , 'MerFunc@index');
+
+    Route::get('read' , 'MerFunc@read');
+
+    Route::post('update/{id}' ,   'MerFunc@update');
+
+    Route::post('insert' ,   'MerFunc@insert');
+
+    Route::post('destroy' ,   'MerFunc@destroy');
+
+    Route::post('update_privilege/{funcId}' ,   'MerFunc@update_privilege');
+
+
+
+});
+
+//机构角色
+Route::group(['prefix'=>'backend/merrole','namespace'=>'Backend'],function(){
+
+    Route::get('index' , 'MerRole@index');
+
+    Route::get('read' , 'MerRole@read');
+
+    Route::post('update/{id}' ,   'MerRole@update');
+
+    Route::post('insert' ,   'MerRole@insert');
+
+    Route::post('destroy' ,   'MerRole@destroy');
+
+    Route::post('get_permission' ,   'MerRole@get_permission');
+
+    Route::post('get_privilegedata' , 'MerRole@get_privilegeData');
+
+    Route::post('update_permission' , 'MerRole@update_permission');
+
+
+
+
+});
+
 //系统用户
 Route::group(['prefix'=>'backend/mersysuser','namespace'=>'Backend'],function(){
 

@@ -94,12 +94,10 @@ class SysFuncService extends BaseService{
         $param = extend( $default , $param);
 
         $data = $this->getModel()->status($param['status'])->module($param['module'])->isMenu($param['isMenu'])
-
             ->orderBy( 'level', 'ASC')
             ->orderBy( 'sort', 'ASC')
             ->get()
             ->toArray();
-
 
 
 
