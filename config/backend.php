@@ -14,4 +14,9 @@ return [
     'defaultPwd' => '123123',
 
     'areaCachePrefix' => 'backend_area',
+
+    'JPush'      => [
+        'appKey' => 'xxx' ,
+        'secret' => 'xxx' ,
+    ] ,
 ];

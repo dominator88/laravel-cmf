@@ -230,6 +230,38 @@ Route::group(['prefix'=>'backend/meruser','namespace'=>'Backend'],function(){
 
 });
 
+//APP版本管理
+Route::group(['prefix'=>'backend/sysappversion','namespace'=>'Backend'],function(){
+
+    Route::get('index' , 'SysAppVersion@index');
+
+    Route::get('read' , 'SysAppVersion@read');
+
+    Route::post('update/{id}' ,   'SysAppVersion@update');
+
+    Route::post('insert' ,   'SysAppVersion@insert');
+
+    Route::post('destroy' ,   'SysAppVersion@destroy');
+
+});
+
+//消息推送
+Route::group(['prefix'=>'backend/syspush','namespace'=>'Backend'],function(){
+
+    Route::get('index' , 'syspush@index');
+
+    Route::get('read' , 'syspush@read');
+
+    Route::post('update/{id}' ,   'syspush@update');
+
+    Route::post('insert' ,   'syspush@insert');
+
+    Route::post('destroy' ,   'syspush@destroy');
+
+});
+
+
+
 //接口模拟器
 Route::group(['prefix'=>'backend/simulator','namespace'=>'Backend'],function(){
 
