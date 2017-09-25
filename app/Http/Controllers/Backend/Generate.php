@@ -84,7 +84,7 @@ class Generate extends Backend {
 
 
     function create_system(Request $request) {
-        $data = $request->all();
+        $data = $request->except('components._token');
 
         $result = $this->service->createSystem( $data );
 

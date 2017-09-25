@@ -1,5 +1,5 @@
 <?php
-namespace App\api\service\{apiVersion}\{directory};
+namespace App\Http\Controllers\Api\Service\{apiVersion}\{directory};
 
 /**
  * {desc}

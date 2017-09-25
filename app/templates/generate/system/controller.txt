@@ -16,7 +16,7 @@ class {func} extends {module} {
 	 * {func} constructor.
 	 */
 	public function __construct(Request $request) {
-		parent::__construct(Request $request);
+		parent::__construct($request);
 		$this->_initClassName( $this->controller );
 		$this->service = {func}Service::instance();
 	}

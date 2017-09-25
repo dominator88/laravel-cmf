@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 define( 'SYSTEM_TEMP_BASE_PATH', app_path() . '/templates/generate/system/' );
 define( 'API_TEMP_BASE_PATH', app_path() . '/templates/generate/api' );
 define( 'APP_PATH' , app_path());
+define( 'BASE_PATH' , base_path());
 
 class GenerateService {
 
@@ -67,10 +68,11 @@ class GenerateService {
      //   'model'      => base_path('common/model/{func}.php'),
         'model'     => APP_PATH .'/Models/{func}.php',
         'service'    => APP_PATH . '/Service/{func}Service.php',
-        'controller' => APP_PATH . '{moduleLower}/controller/{funcUcfirst}.php',
+        'controller' => APP_PATH . '/Http/Controllers/{moduleLower}/{func}.php',
         'js'         => 'static/js/{moduleLower}/{func}.js',
-        'view'       => APP_PATH . '{module}/view/{funcLower}/index.html',
-        'api'        => APP_PATH . 'api/service/',
+     //   'view'       => BASE_PATH . '/resources/views/{module}/{funcLower}/index.html',
+        'view'       => BASE_PATH . '/resources/views/{funcLower}/index.blade.php',
+        'api'        => APP_PATH . '/Http/Controllers/Api/Service/',
     ];
 
     //字段识别
@@ -651,9 +653,9 @@ class GenerateService {
         //字段默认值
         $fieldDefault = [];
         foreach ( $data['fieldInfo'] as $item ) {
-            $val = ( $item['fieldDefault'] == 'CURRENT_TIMESTAMP' ) ? "date('Y-m-d H:i:s')" : "'{$item["fieldDefault"]}'";
+            $val = ( $item->fieldDefault == 'CURRENT_TIMESTAMP' ) ? "date('Y-m-d H:i:s')" : "'{$item->fieldDefault}'";
 
-            $fieldDefault[] = "'{$item['fieldName']}' => $val , ";
+            $fieldDefault[] = "'{$item->fieldName}' => $val , ";
         }
 
         $replaceData['fieldDefault'] = implode( "\r", $fieldDefault );
@@ -740,8 +742,8 @@ class GenerateService {
         ];
 
         foreach ( $data['fieldInfo'] as $item ) {
-            $field   = $item['fieldName'];
-            $comment = $item['fieldComment'];
+            $field   = $item->fieldName;
+            $comment = $item->fieldComment;
             //th 排除字段
             if ( ! in_array( $field, $this->fieldIdentify['thExclusion'] ) ) {
                 $formatter = '';
@@ -753,7 +755,7 @@ class GenerateService {
                     $width = $this->fieldIdentify['thWidth'][ $field ];
                 }
 
-                $replaceField['tableTh'] .= '<th width="' . $width . '" data-field="' . $item['fieldName'] . '" ' . $formatter . '>' .
+                $replaceField['tableTh'] .= '<th width="' . $width . '" data-field="' . $item->fieldName . '" ' . $formatter . '>' .
                     $comment . '</th>' . "\r";
             }
             if ( ! in_array( $field, $this->fieldIdentify['formExclusion'] ) ) {
@@ -764,7 +766,8 @@ class GenerateService {
         $fileContent = $this->replaceTmp( $fileContent, $replaceField );
 
 
-        $dir = APP_PATH . "/{$replaceData['moduleLower']}/view/{$replaceData['funcLower']}";
+        $dir = BASE_PATH . "/resources/views/{$replaceData['funcLower']}";
+
         if ( ! file_exists( $dir ) ) {
             mkdir( $dir, 0777, TRUE );
             chmod( $dir, 0777 );
