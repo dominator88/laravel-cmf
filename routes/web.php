@@ -292,7 +292,16 @@ Route::group(['prefix'=>'backend/sysmail','namespace'=>'Backend'],function(){
 
 });
 
+//代码生成
+Route::group(['prefix'=>'backend/generate','namespace'=>'Backend'],function(){
 
+    Route::get('index' , 'Generate@index');
+
+    Route::get('get_system_info' , 'Generate@get_system_info');
+
+    Route::post('create_system' ,  'Generate@create_system');
+
+});
 
 //接口模拟器
 Route::group(['prefix'=>'backend/simulator','namespace'=>'Backend'],function(){

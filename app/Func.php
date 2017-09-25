@@ -188,3 +188,45 @@ if ( ! function_exists( 'rand_string' ) ) {
         return $str;
     }
 }
+
+if ( ! function_exists( 'form_options_rows' ) ) {
+    /**
+     * 生成下拉选项 from rows
+     *
+     * @param $data
+     * @param string $id
+     * @param string $text
+     * @param string $node_field
+     * @param int $selected_value
+     * @param array $dat
+     *
+     * @return mixed|string
+     */
+    function form_options_rows( $data , $id = 'id' , $text = "name" , $node_field = "children" , $selected_value = 0 , $dat = [] ) {
+        $html = '';
+        foreach ( $data as $row ) {
+            $value  = $row -> $id;
+            $prefix = '';
+            if ( isset( $row->level ) ) {
+                $prefix = $row->level  - 1 > 0 ? str_repeat( '&nbsp;&nbsp;&nbsp;&nbsp;' , $row->level  - 1 ) . '└─ ' : ''; // ┗
+            }
+            $title = $prefix . $row -> $text ;
+            $d     = '';
+            foreach ( $dat as $p ) {
+                $d .= sprintf( ' data-%s="%s"' , $p , $row [ $p ] );
+            }
+            $html .= sprintf( '<option value="%s" %s>%s</option>' , $value , $d , $title );
+
+            if ( isset( $row -> $node_field  ) ) {
+                $html .= form_options_rows( $row [ $node_field ] , $id , $text , 0 , $row->level  + 1 );
+            }
+        }
+
+        if ( ! empty( $selected_value ) ) {
+            $html = str_replace( 'value="' . $selected_value . '"' , 'value="' . $selected_value . '" selected' , $html );
+        }
+
+        return $html;
+    }
+
+}
