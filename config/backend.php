@@ -19,4 +19,8 @@ return [
         'appKey' => 'xxx' ,
         'secret' => 'xxx' ,
     ] ,
+
+    'sms' => [
+        'name' => 'alidayu',
+    ],
 ];

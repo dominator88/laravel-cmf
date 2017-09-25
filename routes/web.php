@@ -260,6 +260,38 @@ Route::group(['prefix'=>'backend/syspush','namespace'=>'Backend'],function(){
 
 });
 
+//短信
+Route::group(['prefix'=>'backend/syssms','namespace'=>'Backend'],function(){
+
+    Route::get('index' , 'syssms@index');
+
+    Route::get('read' , 'syssms@read');
+
+    Route::post('update/{id}' ,   'syssms@update');
+
+    Route::post('insert' ,   'syssms@insert');
+
+    Route::post('destroy' ,   'syssms@destroy');
+
+});
+
+//邮件
+Route::group(['prefix'=>'backend/sysmail','namespace'=>'Backend'],function(){
+
+    Route::get('index' , 'sysmail@index');
+
+    Route::get('read' , 'sysmail@read');
+
+    Route::post('update/{id}' ,   'sysmail@update');
+
+    Route::post('insert' ,   'sysmail@insert');
+
+    Route::post('destroy' ,   'sysmail@destroy');
+
+    Route::post('send' ,   'sysmail@send');
+
+});
+
 
 
 //接口模拟器
