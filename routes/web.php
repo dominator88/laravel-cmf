@@ -82,6 +82,8 @@ Route::group(['prefix'=>'backend/sysuser','namespace'=>'Backend'],function(){
 
     Route::post('destroy' ,   'SysUser@destroy');
 
+    Route::get('reset_pwd/{id}' ,   'SysUser@reset_pwd');
+
 });
 
 //区域管理
@@ -300,6 +302,8 @@ Route::group(['prefix'=>'backend/generate','namespace'=>'Backend'],function(){
     Route::get('get_system_info' , 'Generate@get_system_info');
 
     Route::post('create_system' ,  'Generate@create_system');
+
+    Route::post('create_api' ,  'Generate@create_api');
 
 });
 

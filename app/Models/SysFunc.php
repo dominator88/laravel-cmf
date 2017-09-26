@@ -19,4 +19,11 @@ class SysFunc extends Model
             return $query->where('is_menu',$param);
     }
 
+
+
+    public function sysRolePermissions(){
+        return $this->belongsToMany('App\Models\SysRolePermission' , 'sys_func_privilege' , 'id' , 'func_id');
+    }
+
+
 }

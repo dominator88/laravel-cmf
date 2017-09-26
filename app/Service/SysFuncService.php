@@ -7,6 +7,7 @@
  */
 namespace App\Service;
 use App\Models\SysFunc;
+use Illuminate\Support\Facades\DB;
 
 class SysFuncService extends BaseService{
 
@@ -131,9 +132,20 @@ class SysFuncService extends BaseService{
      */
     private function _getMenuByRoles( $roleIds , $module ) {
         $key = self::DEFAULT_KEY;
+        $permissions = SysRolePermissionService::instance();
+        $data = $permissions->getModel()->with('sysFuncs')->whereIn('role_id',$roleIds)->get()->toArray();
 
-        $data = $this->getModel()
-            ->alias( 'f' )
+           $data = DB::table('sys_func')
+                ->where('sys_func.is_menu' , 1)
+                ->where('sys_func.status' , 1)
+                ->where('sys_func.module' , "$module")
+                ->whereIn('sys_role_permission.role_id' , $roleIds)
+                ->where( 'sys_func_privilege.name' , "read" )
+                ->leftJoin('sys_func_privilege' , 'sys_func_privilege.func_id' , '=' , 'sys_func.id')
+                ->leftJoin('sys_role_permission' , 'sys_role_permission.privilege_id','=' , 'sys_func_privilege.id')
+                ->orderBy('sys_func.level' , 'ASC')->orderBy('sys_func.sort' , 'ASC')->get(['sys_func.id' , 'sys_func.sort' , 'sys_func.pid' , 'sys_func.name' , 'sys_func.icon' , 'sys_func.uri' , 'sys_func.level' ])->toArray();
+
+            /*->alias( 'f' )
             ->field( 'DISTINCT f.id , f.sort , f.pid , f.name , f.icon , f.uri , f.level' )
             ->where( 'f.is_menu' , 1 )
             ->where( 'f.status' , 1 )
@@ -143,25 +155,31 @@ class SysFuncService extends BaseService{
             ->join( 'sys_func_privilege fp' , 'fp.func_id = f.id' )
             ->join( 'sys_role_permission rp' , 'rp.privilege_id = fp.id' )
             ->order( 'f.level ASC , f.sort ASC' )
-            ->select();
+            ->select();*/
 
         $result = [];
         $index  = [];
+        $func_ids = [];
 
         foreach ( $data as $row ) {
-            if ( $row['pid'] == 0 ) {
-                $result[ $row['id'] ] = $row;
-                $index[ $row['id'] ]  = &$result[ $row['id'] ];
-            } else {
-                $index[ $row['pid'] ][ $key ][ $row['id'] ] = $row;
-
-                $index[ $row['id'] ] = &$index[ $row['pid'] ][ $key ][ $row['id'] ];
+            if(in_array($row->id ,$func_ids)){
+                continue;
             }
+
+            if ( $row->pid == 0 ) {
+                $result[ $row->id ] = get_object_vars($row);
+                $index[ $row->id ]  = &$result[ $row->id ];
+            } else {
+                $index[ $row->pid ][ $key ][ $row->id ] = get_object_vars($row);
+
+                $index[ $row->id ] = &$index[ $row->pid ][ $key ][ $row->id ];
+            }
+            $func_ids[] = $row->id;
         }
 
         return $this->treeToArray( $result , self::DEFAULT_KEY );
     }
-    //
+
 
     public function withPrivilege( $data ){
         $allId = [];

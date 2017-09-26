@@ -218,8 +218,8 @@ class GenerateService {
     ];
 
     var $apiTemp = [
-        'tmp'      => APP_PATH . 'common/generate/api/api.txt',
-        'authUser' => APP_PATH . 'common/generate/api/auth_user.txt'
+        'tmp'      => APP_PATH . '/templates/generate/api/api.txt',
+        'authUser' => APP_PATH . '/templates/generate/api/auth_user.txt'
     ];
 
     private static $instance;
@@ -831,7 +831,7 @@ class GenerateService {
         $params = '';
         if ( isset( $data['params'] ) ) {
             foreach ( $data['params'] as $param ) {
-                $params .= file_get_contents( APP_PATH . "common/generate/api/params/{$param}.txt" ) . "\r";
+                $params .= file_get_contents( APP_PATH . "/templates/generate/api/params/{$param}.txt" ) . "\r";
             }
         }
         $data['params'] = $params;

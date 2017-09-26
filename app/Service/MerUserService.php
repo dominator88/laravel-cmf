@@ -11,6 +11,9 @@
 
 
 use App\Models\MerUser;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class MerUserService extends BaseService {
 
@@ -593,9 +596,14 @@ class MerUserService extends BaseService {
      */
     public function resetPwd( $id , $pwd ) {
         try {
-            $this->getModel()->where( 'id' , $id )->update( [
-                'password' => str2pwd( $pwd )
-            ] );
+            $user = User::find($id);
+            $user->password = Hash::make( $pwd );
+            $user->setRememberToken(Str::random(60));
+
+            $user->save();
+            /*$this->getModel()->where( 'id' , $id )->update( [
+                'password' => Hash::make( $pwd )
+            ] );*/
 
             return ajax_arr( '重置密码成功' , 0 );
         } catch ( \Exception $e ) {

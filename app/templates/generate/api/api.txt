@@ -8,7 +8,7 @@ namespace App\Http\Controllers\Api\Service\{apiVersion}\{directory};
  * @version 2.0 , {date}
  */
 
-use apps\api\service\v1\ApiService;
+use App\Http\Controllers\Api\Service\v1\ApiService;
 
 class {name}Service extends ApiService {
 

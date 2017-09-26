@@ -102,8 +102,8 @@ class SysUser extends Backend {
      *
      * @return json
      */
-    public function reset_pwd() {
-        $id     = input( 'get.id' );
+    public function reset_pwd($id) {
+
         $result = $this->service->resetPwd( $id , config( 'backend.defaultPwd' ) );
 
         return response()->json( $result );

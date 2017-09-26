@@ -182,7 +182,7 @@ var SysUser = {
       e.preventDefault();
       var id = $( this ).data( 'id' );
       sure.init( '将密码重置为 ' + Param.defaultPwd + " ?" , function () {
-        $.get( Param.uri.resetPwd + id , function ( ret ) {
+        $.get( Param.uri.resetPwd +'/'+ id , function ( ret ) {
           if ( ret.code != 0 ) {
             tips.error( ret.msg );
             return;

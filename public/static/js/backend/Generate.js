@@ -97,6 +97,7 @@ var Generate = {
 		$('#createApiBtn').on('click' , function (e) {
 			e.preventDefault();
 			var data = $('#apiForm').serializeObject();
+			data._token = self.token;
 			if ( empty(data.desc) ) {
 				tips.error('描述不能为空');
 			}

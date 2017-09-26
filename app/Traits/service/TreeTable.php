@@ -50,8 +50,8 @@ trait TreeTable {
 	private function treeToArray( $arr, $key ) {
 		$ret = [];
 		foreach ( $arr as $val ) {
-			if ( isset( $val[ $key ] ) ) {
-				$val[ $key ] = $this->treeToArray( $val[ $key ], $key );
+			if ( isset( $val->$key ) ) {
+                $val->$key  = $this->treeToArray( $val->$key , $key );
 			}
 			$ret[] = $val;
 		}

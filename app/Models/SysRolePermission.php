@@ -13,4 +13,8 @@ class SysRolePermission extends Model
     public $timestamps = false ;
 
     use \App\Traits\Service\Scope;
+
+    public function sysFuncs(){
+        return  $this->belongsToMany('App\Models\SysFunc' , 'sys_func_privilege' , 'func_id' , 'id');
+    }
 }

@@ -12,6 +12,7 @@ namespace App\Service;
 use App\Models\SysUser;
 use App\Models\SysUserRole;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 
 class SysUserService extends BaseService {
@@ -296,7 +297,8 @@ class SysUserService extends BaseService {
      */
     public function resetPwd( $id , $pwd ) {
         try {
-            $data['password'] = str2pwd( $pwd );
+          //  $data['password'] = str2pwd( $pwd );
+            $data['password'] = Hash::make($pwd);
             $row              = $this->getModel()->where( 'id' , $id )->update( $data );
             if ( $row <= 0 ) {
                 return ajax_arr( '未修改任何记录' , 500 );
