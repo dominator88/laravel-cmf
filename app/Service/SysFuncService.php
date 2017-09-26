@@ -132,30 +132,17 @@ class SysFuncService extends BaseService{
      */
     private function _getMenuByRoles( $roleIds , $module ) {
         $key = self::DEFAULT_KEY;
-        $permissions = SysRolePermissionService::instance();
-        $data = $permissions->getModel()->with('sysFuncs')->whereIn('role_id',$roleIds)->get()->toArray();
 
-           $data = DB::table('sys_func')
-                ->where('sys_func.is_menu' , 1)
-                ->where('sys_func.status' , 1)
-                ->where('sys_func.module' , "$module")
-                ->whereIn('sys_role_permission.role_id' , $roleIds)
-                ->where( 'sys_func_privilege.name' , "read" )
-                ->leftJoin('sys_func_privilege' , 'sys_func_privilege.func_id' , '=' , 'sys_func.id')
-                ->leftJoin('sys_role_permission' , 'sys_role_permission.privilege_id','=' , 'sys_func_privilege.id')
-                ->orderBy('sys_func.level' , 'ASC')->orderBy('sys_func.sort' , 'ASC')->get(['sys_func.id' , 'sys_func.sort' , 'sys_func.pid' , 'sys_func.name' , 'sys_func.icon' , 'sys_func.uri' , 'sys_func.level' ])->toArray();
+           $data = DB::table('sys_func AS f')
+                ->where('f.is_menu' , 1)
+                ->where('f.status' , 1)
+                ->where('f.module' , "$module")
+                ->whereIn('rp.role_id' , $roleIds)
+                ->where( 'fp.name' , "read" )
+                ->leftJoin('sys_func_privilege AS fp' , 'fp.func_id' , '=' , 'f.id')
+                ->leftJoin('sys_role_permission AS rp' , 'rp.privilege_id','=' , 'fp.id')
+                ->orderBy('f.level' , 'ASC')->orderBy('f.sort' , 'ASC')->get(['f.id' , 'f.sort' , 'f.pid' , 'f.name' , 'f.icon' , 'f.uri' , 'f.level' ])->toArray();
 
-            /*->alias( 'f' )
-            ->field( 'DISTINCT f.id , f.sort , f.pid , f.name , f.icon , f.uri , f.level' )
-            ->where( 'f.is_menu' , 1 )
-            ->where( 'f.status' , 1 )
-            ->where( 'f.module' , $module )
-            ->where( 'rp.role_id' , 'in' , $roleIds )
-            ->where( 'fp.name' , 'read' )
-            ->join( 'sys_func_privilege fp' , 'fp.func_id = f.id' )
-            ->join( 'sys_role_permission rp' , 'rp.privilege_id = fp.id' )
-            ->order( 'f.level ASC , f.sort ASC' )
-            ->select();*/
 
         $result = [];
         $index  = [];
