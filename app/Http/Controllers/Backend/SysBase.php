@@ -8,6 +8,8 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Service\MerAlbumCatalogService;
+use App\Service\MerAlbumService;
 use App\Service\SysAreaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -62,7 +64,7 @@ class SysBase extends  Controller{
         $this->data['param']['uri']       = [
             'base'    => $this->baseUri ,
             'module'  => "{$this->baseUri}{$this->module}/index/index" ,
-            'img'     => config( 'custom.imgUri' ) ,
+            'img'     => config( 'backend.imgUri' ) ,
             'menu'    => "" ,
             'this'    => full_uri( $currentBaseUri . $this->action ) ,
             'chPwd'   => full_uri( "{$this->baseUri}{$this->module}/auth/changePassword" ) ,
@@ -189,8 +191,25 @@ class SysBase extends  Controller{
 
     }
 
-    public function read_album(){
+    public function read_album(Request $request){
+        $MerAlbum = MerAlbumService::instance();
 
+        $config = [
+            'field'    => [ 'id' , 'uri' , 'mimes' , 'desc' , 'img_size' ] ,
+            'merId'    => $this->merId ,
+            'catalog'  => $request->input( 'catalog' , '' ) ,
+            'sort'     => 'id' ,
+            'order'    => 'DESC' ,
+            'status'   => 1 ,
+            'page'     => $request->input( 'page' , 1 ) ,
+            'pageSize' => $request->input( 'pageSize' , 12 ) ,
+        ];
+
+        $result['rows']  = $MerAlbum->getByCond( $config );
+        $config['count'] = TRUE;
+        $result['total'] = $MerAlbum->getByCond( $config );
+
+        return json( $result );
     }
 
     /**

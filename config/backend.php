@@ -20,6 +20,8 @@ return [
         'secret' => 'xxx' ,
     ] ,
 
+    'imgUri' => '',
+
     'sms' => [
         'name' => 'alidayu',
     ],

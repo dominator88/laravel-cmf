@@ -84,6 +84,10 @@ Route::group(['prefix'=>'backend/sysuser','namespace'=>'Backend'],function(){
 
     Route::get('reset_pwd/{id}' ,   'SysUser@reset_pwd');
 
+    Route::get('read_album_catalog' ,   'SysUser@read_album_catalog');
+
+    Route::get('read_album' ,   'SysUser@read_album');
+
 });
 
 //区域管理
