@@ -26,13 +26,12 @@ class GenerateService {
     var $module = [
         'Backend' => 'Backend',
         'Mp'      => 'Mp',
-        'Nahuo'     => 'Nahuo',
-        'Ask'      => 'Ask',
+
     ];
 
     var $apiVer = [
         'v1' => 'v1',
-        'Nahuo' => 'Nahuo',
+
     ];
 
     var $apiParams = [

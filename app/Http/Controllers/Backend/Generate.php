@@ -53,7 +53,7 @@ class Generate extends Backend {
                 'viewType'  => 'portlet',
             ],
             'apiDefault'              => [
-                'apiVersion' => 'Nahuo',
+                'apiVersion' => 'v1',
                 'authUser'   => '1',
             ],
         ] );
