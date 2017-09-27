@@ -160,14 +160,13 @@ class SysMerchantService extends BaseService {
      *
      * @param $userId
      *
-     * @return array|false|\PDOStatement|string|\think\Model
+     * @return array
      */
     public function getBySysUser( $userId ) {
-        $data = db( 'MerSysUser' )->field( 'm.*' )
-            ->alias( 'su' )
+        $data = DB::table( 'MerSysUser as su' )
             ->where( 'su.sys_user_id', $userId )
-            ->join( 'sys_merchant m', 'm.id = su.mer_id' )
-            ->find();
+            ->leftJoin( 'sys_merchant as m', 'm.id = su.mer_id' )
+            ->first();
 
         return $data ? $data : [];
     }
